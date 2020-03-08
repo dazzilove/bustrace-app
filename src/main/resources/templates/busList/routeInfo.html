@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default">
+
+<div layout:fragment="content" >
+    <titleFragment th:include="fragments/title :: titleFragment (${route.routeName} + '번 상세정보')"
+                   th:remove="tag"></titleFragment>
+
+    <ul class="nav nav-tabs subTab">
+        <li class="nav-item">
+            <a class="nav-link" href="#" id="defaultInfoTab" onclick="changeTab(this)">기본정보</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="#" id="stationsTab" onclick="changeTab(this)">정거장 정보</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" id="specialInfoTab" onclick="changeTab(this)">특이사항</a>
+        </li>
+    </ul>
+
+    <div id="defaultInfoTabArea" style="display: none;">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">라우트ID = <span th:text="${route.routeId}"></span></li>
+            <li class="list-group-item">노선번호 = <span th:text="${route.routeName}"></span></li>
+            <li class="list-group-item">운행정보
+                <div>평일 운행 대수 = <span th:text="${route.weekdayCount}"></span></div>
+                <div>주말 운행 대수 = <span th:text="${route.weekendCount}"></span></div>
+                <div>2층버스 평일 운행 대수 = <span th:text="${route.weekdayDoubleDeckerCount}"></span></div>
+                <div>2층버스 주말 운행 대수 = <span th:text="${route.weekendDoubleDeckerCount}"></span></div>
+            </li>
+            <li class="list-group-item">운수업체 = <span th:text="${route.companyName}"></span></li>
+            <li class="list-group-item">평일최소 배차시간 = <span th:text="${route.peekAlloc}"></span></li>
+            <li class="list-group-item">평일최대 배차시간 = <span th:text="${route.nPeekAlloc}"></span></li>
+            <li class="list-group-item">기점
+                <div>기점정류소 = <span th:text="${route.startStationName}"></span> (<span th:text="${route.startStationId}"></span>)</div>
+                <div>평일기점 첫차시간 = <span th:text="${route.upFirstTime}"></span></div>
+                <div>평일기점 막차시간 = <span th:text="${route.upLastTime}"></span></div>
+            </li>
+            <li class="list-group-item">종점
+                <div>종점정류소 = <span th:text="${route.endStationName}"></span> (<span th:text="${route.endStationId}"></span>)</div>
+                <div>평일종점 첫차시간 = <span th:text="${route.downFirstTime}"></span></div>
+                <div>평일종점 막차시간 = <span th:text="${route.downLastTime}"></span></div>
+            </li>
+        </ul>
+    </div>
+
+    <div id="stationsTabArea" style="display: none;">
+    </div>
+
+    <div id="specialInfoTabArea" style="display: none;"
+         th:with="size=${#lists.size(specialMessages)}">
+        <div th:if="${size}==0">특이사항 없습니다.</div>
+        <div th:if="${size}>0">
+            <ul class="list-group list-group-flush" th:each="messageInfo: ${specialMessages}">
+                <li class="list-group-item">
+                    <span th:text="${messageInfo.formatedCreatedAt}"></span>
+                    |
+                    <span th:text="${messageInfo.message}"></span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</html>

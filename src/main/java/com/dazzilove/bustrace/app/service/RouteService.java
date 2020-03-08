@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface RouteService {
     List<Route> getRoutes();
+
+    Route getOnlyRouteInfo(String id);
 }

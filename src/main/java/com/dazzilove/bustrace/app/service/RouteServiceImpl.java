@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,10 +58,20 @@ public class RouteServiceImpl implements RouteService {
         return routeList;
     }
 
+    @Override
+    public Route getOnlyRouteInfo(String id) {
+        return getRoute(id);
+    }
+
     private List<TripPlan> getTripPlans(String routeId) {
         return tripPlanService.findByRouteId(routeId).stream()
                 .filter((TripPlan tempTripPlan) -> ("N".equals(tempTripPlan.getDeleteYn())))
                 .sorted((TripPlan a, TripPlan b) -> ((a.getTurnNumber() > b.getTurnNumber()) ? 1 : -1))
                 .collect(Collectors.toList());
+    }
+
+    private Route getRoute(String id) {
+        Optional<Route> tripPlan = routeRepository.findById(UUID.fromString(id));
+        return tripPlan.orElse(new Route());
     }
 }
