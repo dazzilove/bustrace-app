@@ -12,7 +12,8 @@
 </th:block>
 
 <div layout:fragment="content" >
-    <h1>Thymeleaf 예제 2</h1>
+    <titleFragment th:include="fragments/title :: titleFragment (title='Sample Time')"
+                   th:remove="tag"></titleFragment>
     <span th:text="${user.userId}"></span><br/>
     <span th:text="${user.name}"></span><br/>
     <span th:text="${user.authType}"></span><br/>
