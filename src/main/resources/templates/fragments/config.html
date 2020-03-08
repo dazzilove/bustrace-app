@@ -1,19 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="configFragment"><meta charset="UTF-8" />
 
-<configFragment th:fragment="configFragment">
-    <meta charset="UTF-8" />
     <link href="/css/bootstrap-4.4.1/bootstrap.css" rel="stylesheet"/>
     <link href="/css/base.css" rel="stylesheet"/>
-    <th:block layout:fragment="css"></th:block>
 
     <script src="/js/jquery-3.4.1.min.js"></script>
     <script src="/js/popper.min.js"></script>
     <script src="/js/bootstrap-4.4.1/bootstrap.js"></script>
 
     <script src="/js/default.js"></script>
-    <th:block layout:fragment="script"></th:block>
-</configFragment>
-
+</head>
 </html>

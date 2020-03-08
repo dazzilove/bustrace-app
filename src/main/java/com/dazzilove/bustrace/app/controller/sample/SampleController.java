@@ -12,6 +12,7 @@ public class SampleController {
     public String getUser(Model model) {
         User user = new User("kkaok", "테스트", "web") ;
         model.addAttribute("user", user);
+        model.addAttribute("currentMenu", "1");
         return "sample";
     }
 }

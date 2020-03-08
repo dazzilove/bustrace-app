@@ -2,12 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
-    <configFragment th:replace="fragments/config :: configFragment"></configFragment>
+    <head>
+        <configFragment th:replace="fragments/config :: configFragment"></configFragment>
+    </head>
 
-    <navFragment th:replace="fragments/nav :: navFragment"></navFragment>
-
-    <div layout:fragment="content" class="container"></div>
-
-    <footerFragment th:replace="fragments/footer:: footerFragment"></footerFragment>
+    <body>
+        <navFragment th:replace="fragments/nav :: navFragment"></navFragment>
+        <div layout:fragment="content" class="container"></div>
+        <footerFragment th:replace="fragments/footer:: footerFragment"></footerFragment>
+    </body>
 
 </html>
