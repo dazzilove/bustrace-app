@@ -1,4 +1,4 @@
-package com.dazzilove.bustrace.app.controller.sample;
+package com.dazzilove.bustrace.app.controller;
 
 import com.dazzilove.bustrace.app.domain.sample.User;
 import org.springframework.stereotype.Controller;
