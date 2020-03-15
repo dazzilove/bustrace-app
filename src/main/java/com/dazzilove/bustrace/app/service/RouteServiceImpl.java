@@ -1,13 +1,21 @@
 package com.dazzilove.bustrace.app.service;
 
 import com.dazzilove.bustrace.app.domain.Route;
+import com.dazzilove.bustrace.app.domain.Station;
 import com.dazzilove.bustrace.app.domain.TripPlan;
 import com.dazzilove.bustrace.app.repository.RouteRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
+import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,10 +27,13 @@ public class RouteServiceImpl implements RouteService {
     final static Logger logger = LoggerFactory.getLogger(RouteService.class);
 
     @Autowired
-    RouteRepository routeRepository;
+    private MongoOperations mongoOperations;
 
     @Autowired
-    TripPlanService tripPlanService;
+    private RouteRepository routeRepository;
+
+    @Autowired
+    private TripPlanService tripPlanService;
 
     @Override
     public List<Route> getRoutes() {
@@ -61,6 +72,21 @@ public class RouteServiceImpl implements RouteService {
     @Override
     public Route getOnlyRouteInfo(String id) {
         return getRoute(id);
+    }
+
+    @Override
+    public List<Station> getStationsByRouteId(String routeId) {
+        List<AggregationOperation> list = new ArrayList<AggregationOperation>();
+        if (routeId.length() > 0)
+            list.add(Aggregation.match(Criteria.where("routeId").is(routeId)));
+        list.add(Aggregation.sort(Sort.Direction.ASC, "stationSeq"));
+        TypedAggregation<Station> agg = Aggregation.newAggregation(Station.class, list);
+
+        List<Station> locations = mongoOperations.aggregate(agg, Station.class, Station.class).getMappedResults();
+        if (locations == null)
+            locations = new ArrayList<>();
+
+        return locations;
     }
 
     private List<TripPlan> getTripPlans(String routeId) {

@@ -12,7 +12,7 @@ import java.util.List;
 public class SpecialMessageServiceImpl implements SpecialMessageService {
 
     @Autowired
-    SpecialMessageRepository specialMessageRepository;
+    private SpecialMessageRepository specialMessageRepository;
 
     @Override
     public List<SpecialMessage> getSpecialMessageList(String routeId) {

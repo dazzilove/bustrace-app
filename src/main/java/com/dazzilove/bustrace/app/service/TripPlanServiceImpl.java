@@ -11,7 +11,7 @@ import java.util.List;
 public class TripPlanServiceImpl implements TripPlanService {
 
     @Autowired
-    TripPlanRepository tripPlanRepository;
+    private TripPlanRepository tripPlanRepository;
 
     @Override
     public List<TripPlan> findByRouteId(String routeId) {
