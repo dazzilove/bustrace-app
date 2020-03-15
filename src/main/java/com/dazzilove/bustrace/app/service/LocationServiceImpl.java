@@ -63,6 +63,7 @@ public class LocationServiceImpl implements LocationService {
         String day = createdAt.substring(6, 8);
 
         month = ("0".equals(month.substring(0, 1))) ? month.substring(1, 2) : month;
+        day = ("0".equals(day.substring(0, 1))) ? day.substring(1, 2) : day;
 
         return LocalDateTime.of(
                   Integer.parseInt(year)
