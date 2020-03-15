@@ -74,19 +74,6 @@
                 if(currentVal == createdAtOldVal) {
                     return;
                 }
-
-                if (isToday()) {
-                    $(".search-div").css("display", "block");
-                } else {
-                    $(".search-div").css("display", "none");
-                }
-
-                $(".search-div input").each(function(){
-                    $(this).prop("checked", false);
-                    if (isToday() && $(this).attr("data-search-div") == "today") {
-                        $(this).prop("checked", true);
-                    }
-                });
             }
 
             function resetStations(targetClassName) {
@@ -99,12 +86,7 @@
                 })
                 .done(function(data) {
                     createStationList(data);
-
-                    if (isToday()) {
-                        btnToday();
-                    } else {
-                        btnAll();
-                    }
+                    showLocationListAll();
                 })
                 .fail(function() {
                     alert("error");
@@ -249,28 +231,6 @@
                     createLocationList(stationId, stationSeq);
                 });
             }
-
-            function isToday() {
-                var searchCreatedAt = $("#createdAt").val();
-
-                var now = new Date();
-                var nowYear = now.getFullYear();
-                var month = now.getMonth() + 1;
-                var day = now.getDate();
-
-                var nowStr = nowYear + "-" + ((month < 10) ? "0" + month : month) + "-" + day;
-
-                if (nowStr == searchCreatedAt) {
-                    return true;
-                }
-                return false;
-            }
-            function btnToday() {
-                alert("개발대기중 - ALL 먼저 진행 합니다.");
-            }
-            function btnAll() {
-                showLocationListAll();
-            }
         </script>
         <form name="searchForm" id="searchForm">
             <input type="hidden" id="routeId" name="routeId" th:value="${route.routeId}" />
@@ -283,14 +243,6 @@
                 <div class="form-group">
                     <button type="button" class="btn btn-primary btn-sm " onclick="resetStations('location-list')">Search</button>
                 </div>
-            </div>
-            <div class="btn-group btn-group-toggle btn-group-sm search-div bottomPadding" data-toggle="buttons">
-                <label class="btn btn-secondary active" data-search-div="today">
-                    <input type="radio" name="searchDiv" id="searchDiv_today" data-search-div="today" onclick="btnToday()" checked> Today
-                </label>
-                <label class="btn btn-secondary" data-search-div="all">
-                    <input type="radio" name="searchDiv" id="searchDiv_all" onclick="btnAll()" data-search-div="all"> All
-                </label>
             </div>
         </form>
         <div class="progress-area bottomPadding" style="display: none;">
@@ -309,8 +261,7 @@
         <div th:if="${size}>0">
             <ul class="list-group list-group-flush" th:each="messageInfo: ${specialMessages}">
                 <li class="list-group-item">
-                    <span th:text="${messageInfo.formatedCreatedAt}"></span>
-                    |
+                    <span th:text="${messageInfo.formatedCreatedAt}"></span> |
                     <span th:text="${messageInfo.message}"></span>
                 </li>
             </ul>
