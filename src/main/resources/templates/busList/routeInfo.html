@@ -154,7 +154,7 @@
                     divLocations.setAttribute("id", "station-" + stationId + "-location-list");
                     divLocations.setAttribute("class", "location-list close");
                     divLocations.setAttribute("data-station-id", stationId);
-                    divLocations.innerText = "개발대기 - ALL 먼저 합니다.";
+                    divLocations.setAttribute("data-station-seq", stationSeq);
                     li.append(divLocations);
                 }
             }
