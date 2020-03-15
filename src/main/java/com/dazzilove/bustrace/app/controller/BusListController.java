@@ -6,6 +6,7 @@ import com.dazzilove.bustrace.app.controller.dto.StationParams;
 import com.dazzilove.bustrace.app.domain.Location;
 import com.dazzilove.bustrace.app.domain.Route;
 import com.dazzilove.bustrace.app.domain.Station;
+import com.dazzilove.bustrace.app.service.BusLocationService;
 import com.dazzilove.bustrace.app.service.LocationService;
 import com.dazzilove.bustrace.app.service.RouteService;
 import com.dazzilove.bustrace.app.service.SpecialMessageService;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.ServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -31,6 +33,9 @@ public class BusListController {
 
     @Autowired
     LocationService locationService;
+
+    @Autowired
+    BusLocationService busLocationService;
 
     @Autowired
     private SpecialMessageService specialMessageService;
@@ -92,7 +97,15 @@ public class BusListController {
     public String getLocations(ServletRequest request) throws Exception {
         JsonArray list = new JsonArray();
 
-        List<Location> locations = locationService.getLocations(convertLocationParams(request));
+        LocationParams locationParams = convertLocationParams(request);
+
+        List<Location> locations;
+        if (isToday(locationParams.getCreatedAt())) {
+            locations = busLocationService.getLocations(locationParams);
+        } else {
+            locations = locationService.getLocations(locationParams);
+        }
+
         for(Location location: locations) {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("routeId", location.getRouteId());
@@ -106,6 +119,31 @@ public class BusListController {
         }
 
         return list.toString();
+    }
+
+    private boolean isToday(String createdAt) {
+        String year = createdAt.substring(0, 4);
+        String month = createdAt.substring(4, 6);
+        String day = createdAt.substring(6, 8);
+
+        month = ("0".equals(month.substring(0, 1))) ? month.substring(1, 2) : month;
+        day = ("0".equals(day.substring(0, 1))) ? day.substring(1, 2) : day;
+
+        LocalDateTime now = LocalDateTime.now();
+
+        if (now.getYear() != Integer.parseInt(year)) {
+            return false;
+        }
+        if (now.getMonthValue() != Integer.parseInt(month)) {
+            int a = now.getMonthValue();
+            return false;
+        }
+        if (now.getDayOfMonth() != Integer.parseInt(day)) {
+            int a = now.getDayOfMonth();
+            return false;
+        }
+
+        return true;
     }
 
     private RouteParams convertRouteParams(ServletRequest request) {
