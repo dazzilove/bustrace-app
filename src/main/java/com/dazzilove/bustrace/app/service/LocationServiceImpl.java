@@ -3,6 +3,7 @@ package com.dazzilove.bustrace.app.service;
 import com.dazzilove.bustrace.app.controller.dto.LocationParams;
 import com.dazzilove.bustrace.app.domain.Location;
 import com.dazzilove.bustrace.app.repository.LocationRepository;
+import com.dazzilove.bustrace.app.utils.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -32,8 +33,8 @@ public class LocationServiceImpl implements LocationService {
         String stationSeq = locationParams.getStationSeq();
         String createdAt = locationParams.getCreatedAt();
 
-        LocalDateTime startCreatedAt = getStartCreatedAt(createdAt);
-        LocalDateTime endCreatedAt = getEndCreatedAt(createdAt);
+        LocalDateTime startCreatedAt = DateUtil.getStartCreatedAt(createdAt);
+        LocalDateTime endCreatedAt = DateUtil.getEndCreatedAt(createdAt);
 
         List<AggregationOperation> aggOperationlist = new ArrayList<AggregationOperation>();
         if (routeId.length() > 0)
@@ -55,33 +56,5 @@ public class LocationServiceImpl implements LocationService {
             locations = new ArrayList<>();
 
         return locations;
-    }
-
-    private LocalDateTime getStartCreatedAt(String createdAt) {
-        String year = createdAt.substring(0, 4);
-        String month = createdAt.substring(4, 6);
-        String day = createdAt.substring(6, 8);
-
-        month = ("0".equals(month.substring(0, 1))) ? month.substring(1, 2) : month;
-        day = ("0".equals(day.substring(0, 1))) ? day.substring(1, 2) : day;
-
-        return LocalDateTime.of(
-                  Integer.parseInt(year)
-                , Integer.parseInt(month)
-                , Integer.parseInt(day)
-                , 0
-                , 0
-                , 0);
-    }
-
-    private LocalDateTime getEndCreatedAt(String createdAt) {
-        LocalDateTime basicDate = getStartCreatedAt(createdAt);
-        return LocalDateTime.of(
-                  basicDate.getYear()
-                , basicDate.getMonthValue()
-                , basicDate.getDayOfMonth()
-                , 23
-                , 59
-                , 59);
     }
 }
