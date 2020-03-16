@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.ServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -64,9 +63,6 @@ public class BusListController {
 
         Route route = routeService.getOnlyRouteInfo(id);
         model.addAttribute("route", route);
-
-        model.addAttribute("specialMessages", getSpecialMessageList(route.getRouteId()));
-
 
         return "busList/routeInfo";
     }

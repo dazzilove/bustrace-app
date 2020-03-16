@@ -53,7 +53,7 @@
                 $("#createdAt").on("propertychange change keyup paste input", function() {
                     resetSearchDivRadio();
                 });
-                resetStations('location-list');
+                // resetStations('location-list');
             });
 
             var totalStationCnt = 0;
@@ -261,17 +261,67 @@
         </div>
     </div>
 
-    <div id="specialInfoTabArea" style="display: none;"
-         th:with="size=${#lists.size(specialMessages)}">
-        <div th:if="${size}==0">특이사항 없습니다.</div>
-        <div th:if="${size}>0">
-            <ul class="list-group list-group-flush" th:each="messageInfo: ${specialMessages}">
-                <li class="list-group-item">
-                    <span th:text="${messageInfo.formatedCreatedAt}"></span> |
-                    <span th:text="${messageInfo.message}"></span>
-                </li>
-            </ul>
+    <div id="specialInfoTabArea" style="display: none;">
+        <script>
+            $(document).ready(function() {
+                changeSpecialMessageCreatedAt();
+            });
+            function changeSpecialMessageCreatedAt() {
+                var routeId = $("#routeId").val();
+                var selectedValue = $("#specialMessageCreatedAtClfCd").val();
+                if (selectedValue == "") {
+                    return;
+                }
+
+                $.ajax({
+                    method: "GET",
+                    url: "/specialMessage/messages",
+                    data: {
+                        routeId: routeId,
+                        createdAtClfCd: selectedValue
+                    }
+                })
+                .done(function(data) {
+                    createSpecialMessages(data);
+                })
+                .fail(function() {
+                    alert('error');
+                });
+            }
+            function createSpecialMessages(data) {
+                if (data == '[]') {
+                    $(".special-message").html("");
+                    $(".special-message").html("<div style='width: 100%; text-align: center'>No Message</div>");
+                    return;
+                }
+                var html = "<ul class='list-group list-group-flush'>";
+                var messages = JSON.parse(data);
+                for (var i=0; i<messages.length; i++) {
+                    var message = messages[i];
+                    html = html + "<li class='list-group-item'>";
+                    html = html + "<span>" + message.createdAt + "</span>";
+                    html = html + "<span style='padding-left:5px; padding-right:5px;'>|</span>";
+                    html = html + "<span>" + message.message + "</span>";
+                    html = html + "</li>";
+                }
+                html = html + "</ul>";
+                $(".special-message").html("");
+                $(".special-message").html(html);
+            }
+        </script>
+        <div class="input-group input-group-sm mb-3 topPadding">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="specialMessageCreatedAtClfCd">Duration</label>
+            </div>
+            <select class="custom-select" id="specialMessageCreatedAtClfCd" onchange="changeSpecialMessageCreatedAt()">
+                <option>Choose...</option>
+                <option value="1" selected>This week</option>
+                <option value="2">Last 1 week</option>
+                <option value="3">This month</option>
+                <option value="4">Last 1 month</option>
+            </select>
         </div>
+        <div class="special-message"></div>
     </div>
 </div>
 </html>
