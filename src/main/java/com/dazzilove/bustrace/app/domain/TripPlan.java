@@ -1,9 +1,11 @@
 package com.dazzilove.bustrace.app.domain;
 
 
+import com.dazzilove.bustrace.app.utils.CodeUtil;
 import com.dazzilove.bustrace.app.utils.DateUtil;
 import lombok.Data;
 import lombok.ToString;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
@@ -25,6 +27,7 @@ public class TripPlan {
     private String spareYn;
     private String schoolBreakReductionYn;
     private LocalDateTime schoolBreakReductionStartedAt;
+    private LocalDateTime schoolBreakReductionEndedAt;
     private String tripStopYn;
     private LocalDateTime tripStopStartedAt;
     private String yesterdayTripRecordYn;
@@ -52,24 +55,20 @@ public class TripPlan {
         return shortPlateNo;
     }
 
-    public String getFormatedSchoolBreakReductionStartedAt() {
-        if (this.schoolBreakReductionStartedAt == null) {
-            return "";
-        }
-        return String.format("%s/%s/%s"
-                , DateUtil.formatTwoLength(String.valueOf(schoolBreakReductionStartedAt.getYear()))
-                , DateUtil.formatTwoLength(String.valueOf(schoolBreakReductionStartedAt.getMonthValue()))
-                , DateUtil.formatTwoLength(String.valueOf(schoolBreakReductionStartedAt.getDayOfMonth())));
+    public String getShortFormatedSchoolBreakReductionStartedAt() {
+        return DateUtil.getShortFormatedDate(this.schoolBreakReductionStartedAt);
     }
 
-    public String getFormatedTripStopStartedAt() {
-        if (this.tripStopStartedAt == null) {
-            return "";
-        }
-        return String.format("%s/%s/%s"
-                , DateUtil.formatTwoLength(String.valueOf(tripStopStartedAt.getYear()))
-                , DateUtil.formatTwoLength(String.valueOf(tripStopStartedAt.getMonthValue()))
-                , DateUtil.formatTwoLength(String.valueOf(tripStopStartedAt.getDayOfMonth())));
+    public String getShortFormatedSchoolBreakReductionEndedAt() {
+        return DateUtil.getShortFormatedDate(this.schoolBreakReductionEndedAt);
+    }
+
+    public String getShortFormatedTripStopStartedAt() {
+        return DateUtil.getShortFormatedDate(this.tripStopStartedAt);
+    }
+
+    public String getPlateTypeIconUrl() {
+        return StringUtils.defaultIfEmpty(CodeUtil.getDetailCodeByDetailCodeId("PLATE_TYPE", this.plateType).getImg(), "");
     }
 
     public boolean isAddValidate() {
@@ -85,6 +84,17 @@ public class TripPlan {
             return false;
         if("".equals(this.schoolBreakReductionYn))
             return false;
+        if("".equals(this.tripStopYn))
+            return false;
+
+        if ("Y".equals(schoolBreakReductionYn)) {
+            if (schoolBreakReductionStartedAt == null || schoolBreakReductionEndedAt == null) {
+                return false;
+            }
+        }
+        if ("Y".equals(tripStopYn) && tripStopStartedAt == null) {
+            return false;
+        }
 
         return true;
     }

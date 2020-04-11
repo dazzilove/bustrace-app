@@ -18,4 +18,23 @@ public class DataGatherScheduler {
     public boolean isEnabled() {
         return enabled;
     }
+
+    public String getScheduleName() {
+        String scheduleName = "";
+        switch (this.schedule) {
+            case "1":
+                scheduleName = "1분";
+                break;
+            case "2":
+                scheduleName = "5분";
+                break;
+            case "3":
+                scheduleName = "15분";
+                break;
+            case "4":
+                scheduleName = "1시간";
+                break;
+        }
+        return scheduleName;
+    }
 }

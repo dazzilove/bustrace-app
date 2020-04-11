@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default">
+
+<th:block layout:fragment="script">
+</th:block>
+
+<div layout:fragment="content" >
+    <titleFragment
+            th:with="title=${(pageMode == 'ADD') ? '노선 등록' : '노선 수정'}"
+            th:include="fragments/title :: titleFragment (${title})"
+            th:remove="tag"></titleFragment>
+
+    <script>
+        $(function () {
+            setInputCheckedByValue();
+        });
+
+        function addRoute() {
+            if (!isValid("ADD")) return;
+            $.ajax({
+                method: "POST",
+                url: "/busMng/addRoute",
+                data: getParams("ADD")
+            }).done(function(msg) {
+                var confirmResult = confirm(msg + "\n추가로 등록하시겠습니까?");
+                if (confirmResult) {
+                    location.href = "/busMng/viewAddRoute";
+                } else {
+                    location.href = "/busMng/routeList";
+                }
+            }).fail(function() {
+                alert("error");
+            });
+        }
+
+        function editRoute() {
+            if (!isValid("EDIT")) return;
+            $.ajax({
+                method: "POST",
+                url: "/busMng/editRoute",
+                data: getParams("EDIT")
+            }).done(function(msg) {
+                alert(msg);
+                location.href = "/busMng/viewEditRoute?id=" + $("#_id").val();
+            }).fail(function() {
+                alert("error");
+            });
+        }
+
+        function delRoute() {
+            $.ajax({
+                method: "POST",
+                url: "/busMng/delRoute",
+                data: getParams("EDIT")
+            }).done(function(msg) {
+                alert(msg);
+                location.href = "/busMng/routeList";
+            }).fail(function() {
+                alert("error");
+            });
+        }
+
+        function isValid(mod) {
+            if (mod != "ADD") {
+
+            }
+            var routeId = $("#routeId").val();
+            var routeName = $("#routeName").val();
+            var weekdayCount = $("#weekdayCount").val();
+            var weekendCount = $("#weekendCount").val();
+            var weekdayDoubleDeckerCount = $("#weekdayDoubleDeckerCount").val();
+            var weekendDoubleDeckerCount = $("#weekendDoubleDeckerCount").val();
+            var companyName = $("#companyName").val();
+            var peekAlloc = $("#peekAlloc").val();
+            var nPeekAlloc = $("#nPeekAlloc").val();
+            var startStationId = $("#startStationId").val();
+            var startStationName = $("#startStationName").val();
+            var upFirstTime = $("#upFirstTime").val();
+            var upLastTime = $("#upLastTime").val();
+            var endStationId = $("#endStationId").val();
+            var endStationName = $("#endStationName").val();
+            var downFirstTime = $("#downFirstTime").val();
+            var downLastTime = $("#downLastTime").val();
+            var dataGatherBatchEnabled = $("input:checkbox[id='dataGatherBatchEnabled']").is(":checked");
+            var dataGatherBatchSchedule = $("#dataGatherBatchSchedule").val();
+
+            if (routeId == "") {
+                alert("라우트ID를 입력해주세요.");
+                return false;
+            }
+            if (routeName == "") {
+                alert("노선번호를 입력해주세요.");
+                return false;
+            }
+            // if (companyName == "") {
+            //     alert("운수업체를 입력해주세요.");
+            //     return false;
+            // }
+            if (weekdayCount == "") {
+                alert("평일 운행 대수를 입력해주세요.");
+                return false;
+            }
+            if (weekendCount == "") {
+                alert("주말 운행 대수를 입력해주세요.");
+                return false;
+            }
+            if (weekdayDoubleDeckerCount == "") {
+                alert("2층버스 평일 운행 대수를 입력해주세요.");
+                return false;
+            }
+            if (weekendDoubleDeckerCount == "") {
+                alert("2층버스 주말 운행 대수를 입력해주세요.");
+                return false;
+            }
+            // if (peekAlloc == "") {
+            //     alert("평일 최소 배차시간을 입력해주세요.");
+            //     return false;
+            // }
+            // if (nPeekAlloc == "") {
+            //     alert("평일 최대 배차시간을 입력해주세요.");
+            //     return false;
+            // }
+            // if (startStationId == "" || startStationName == "") {
+            //     alert("기점 정류소를 입력해주세요.");
+            //     return false;
+            // }
+            // if (endStationId == "" || endStationName == "") {
+            //     alert("종점 정류소를 입력해주세요.");
+            //     return false;
+            // }
+            // if (upFirstTime == "") {
+            //     alert("평일 기점 첫차시간을 입력해주세요.");
+            //     return false;
+            // }
+            // if (upLastTime == "") {
+            //     alert("평일 기점 막차시간을 입력해주세요.");
+            //     return false;
+            // }
+            // if (downFirstTime == "") {
+            //     alert("평일 종점 첫차시간을 입력해주세요.");
+            //     return false;
+            // }
+            // if (downLastTime == "") {
+            //     alert("평일 종점 막차시간을 입력해주세요.");
+            //     return false;
+            // }
+            if (dataGatherBatchEnabled) {
+                if (dataGatherBatchSchedule == "") {
+                    alert("배치실행주기를 선택하세요.");
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        function getParams(pageMode) {
+            var params = {};
+            params.routeId = $("#routeId").val();
+            params.routeName = $("#routeName").val();
+            params.companyName = $("#companyName").val();
+            params.weekdayCount = $("#weekdayCount").val();
+            params.weekendCount = $("#weekendCount").val();
+            params.weekdayDoubleDeckerCount = $("#weekdayDoubleDeckerCount").val();
+            params.weekendDoubleDeckerCount = $("#weekendDoubleDeckerCount").val();
+            params.peekAlloc = $("#peekAlloc").val();
+            params.nPeekAlloc = $("#nPeekAlloc").val();
+            params.startStationId = $("#startStationId").val();
+            params.startStationName = $("#startStationName").val();
+            params.endStationId = $("#endStationId").val();
+            params.endStationName = $("#endStationName").val();
+            params.upFirstTime = $("#upFirstTime").val();
+            params.upLastTime = $("#upLastTime").val();
+            params.downFirstTime = $("#downFirstTime").val();
+            params.downLastTime = $("#downLastTime").val();
+            params.dataGatherBatchEnabled = ($("input:checkbox[id='dataGatherBatchEnabled']").is(":checked")) ? "Y" : "N";
+            params.dataGatherBatchSchedule = $("#dataGatherBatchSchedule").val();
+
+            if (pageMode != "ADD") {
+                params.id = $("#_id").val();
+            }
+
+            return params;
+        }
+    </script>
+    <form id="form1" name="form1">
+        <input type="hidden" id="pageMode" th:value="${pageMode}" />
+        <input type="hidden" id="_id" th:value="${route.id}" />
+        <div class="form-group row" th:if="${pageMode}!='ADD'">
+            <label for="id" class="col-sm-2 col-form-label col-form-label-sm">관리번호</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control form-control-sm" id="id" disabled="disabled" th:attr="data-input-value=${route.id}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="routeId" class="col-sm-2 col-form-label col-form-label-sm">라우트ID</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control form-control-sm" id="routeId" th:attr="data-input-value=${route.routeId}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="routeName" class="col-sm-2 col-form-label col-form-label-sm">노선번호</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control form-control-sm" id="routeName" th:attr="data-input-value=${route.routeName}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="companyName" class="col-sm-2 col-form-label col-form-label-sm">운수업체</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control form-control-sm" id="companyName"  th:attr="data-input-value=${route.companyName}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-form-label-sm">운행대수</div>
+            <div class="input-group input-group-sm">
+                <div class="input-group-append"><span class="input-group-text">평일</span></div>
+                <input type="text" class="form-control" id="weekdayCount" th:attr="data-input-value=${route.weekdayCount}">
+                <div class="input-group-append"><span class="input-group-text">주말</span></div>
+                <input type="text" class="form-control" id="weekendCount" th:attr="data-input-value=${route.weekendCount}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-form-label-sm">2층버스 운행대수</div>
+            <div class="input-group input-group-sm">
+                <div class="input-group-append"><span class="input-group-text">평일</span></div>
+                <input type="text" class="form-control" id="weekdayDoubleDeckerCount" th:attr="data-input-value=${route.weekdayDoubleDeckerCount}">
+                <div class="input-group-append"><span class="input-group-text">주말</span></div>
+                <input type="text" class="form-control" id="weekendDoubleDeckerCount" th:attr="data-input-value=${route.weekendDoubleDeckerCount}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-form-label-sm">평일배차시간</div>
+            <div class="input-group input-group-sm">
+                <div class="input-group-append"><span class="input-group-text">최소</span></div>
+                <input type="text" class="form-control" id="peekAlloc" th:attr="data-input-value=${route.peekAlloc}">
+                <div class="input-group-append"><span class="input-group-text">최대</span></div>
+                <input type="text" class="form-control" id="nPeekAlloc" th:attr="data-input-value=${route.getNPeekAlloc()}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-form-label-sm">정류소</div>
+            <div class="input-group input-group-sm">
+                <div class="input-group-append"><span class="input-group-text">기점</span></div>
+                <input type="text" class="form-control" id="startStationId" placeholder="ID" th:attr="data-input-value=${route.startStationId}">
+                <input type="text" class="form-control" id="startStationName" placeholder="NAME" th:attr="data-input-value=${route.startStationName}">
+            </div>
+            <div class="input-group input-group-sm">
+                <div class="input-group-append"><span class="input-group-text">종점</span></div>
+                <input type="text" class="form-control" id="endStationId" placeholder="ID" th:attr="data-input-value=${route.endStationId}">
+                <input type="text" class="form-control" id="endStationName" placeholder="NAME" th:attr="data-input-value=${route.endStationName}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-form-label-sm">평일 첫차/막차</div>
+            <div class="input-group input-group-sm">
+                <div class="input-group-append"><span class="input-group-text">기점</span></div>
+                <div class="input-group-append"><span class="input-group-text">첫차</span></div>
+                <input type="text" class="form-control" id="upFirstTime" placeholder="00:00" th:attr="data-input-value=${route.upFirstTime}">
+                <div class="input-group-append"><span class="input-group-text">막차</span></div>
+                <input type="text" class="form-control" id="upLastTime" placeholder="00:00" th:attr="data-input-value=${route.upLastTime}">
+            </div>
+            <div class="input-group input-group-sm">
+                <div class="input-group-append"><span class="input-group-text">종점</span></div>
+                <div class="input-group-append"><span class="input-group-text">첫차</span></div>
+                <input type="text" class="form-control" id="downFirstTime" placeholder="00:00" th:attr="data-input-value=${route.downFirstTime}">
+                <div class="input-group-append"><span class="input-group-text">막차</span></div>
+                <input type="text" class="form-control" id="downLastTime" placeholder="00:00" th:attr="data-input-value=${route.downLastTime}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-form-label-sm">데이터 수집 배치</div>
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+                        <input type="checkbox" id="dataGatherBatchEnabled"
+                               th:attr="data-checked-YN=${(route.dataGatherScheduler.isEnabled()) ? 'Y' : 'N'}"
+                               aria-label="데이터 수집 배치를 실행하려면 체크하세요.">
+                    </div>
+                </div>
+                <select class="custom-select" id="dataGatherBatchSchedule" th:attr="data-input-value=${route.dataGatherScheduler.schedule}">
+                    <option value="">선택</option>
+                    <option value="1">1분</option>
+                    <option value="2">5분</option>
+                    <option value="3">15분</option>
+                    <option value="4">1시간</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="contentAlignRight bottomMargin topMargin">
+            <div th:if="${pageMode}=='ADD'">
+                <button type="button" class="btn btn-sm btn-primary" onclick="addRoute()">추가</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="goHistoryBack()">Back</button>
+            </div>
+            <div th:if="${pageMode}!='ADD'">
+                <button type="button" class="btn btn-sm btn-danger" onclick="delRoute()">삭제</button>
+                <button type="button" class="btn btn-sm btn-primary" onclick="editRoute()">수정</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="goHistoryBack()">Back</button>
+            </div>
+        </div>
+    </form>
+</div>
+</html>

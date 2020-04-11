@@ -12,10 +12,21 @@ public class DateUtil {
         return returnValue;
     }
 
+    public static String getShortFormatedDate(LocalDateTime localDateTime) {
+        if (localDateTime == null) return "";
+        return String.format("%s-%s-%s"
+                , DateUtil.formatTwoLength(String.valueOf(localDateTime.getYear()))
+                , DateUtil.formatTwoLength(String.valueOf(localDateTime.getMonthValue()))
+                , DateUtil.formatTwoLength(String.valueOf(localDateTime.getDayOfMonth())));
+    }
+
     public static LocalDateTime getStartCreatedAt(String createdAt) {
-        String year = createdAt.substring(0, 4);
-        String month = createdAt.substring(4, 6);
-        String day = createdAt.substring(6, 8);
+        String createdAtTemp = createdAt;
+        createdAtTemp = createdAtTemp.replaceAll("-", "");
+
+        String year = createdAtTemp.substring(0, 4);
+        String month = createdAtTemp.substring(4, 6);
+        String day = createdAtTemp.substring(6, 8);
 
         month = ("0".equals(month.substring(0, 1))) ? month.substring(1, 2) : month;
         day = ("0".equals(day.substring(0, 1))) ? day.substring(1, 2) : day;

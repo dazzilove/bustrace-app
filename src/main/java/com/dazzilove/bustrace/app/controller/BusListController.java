@@ -61,7 +61,7 @@ public class BusListController {
         }
         model.addAttribute("createdAt", createdAt);
 
-        Route route = routeService.getOnlyRouteInfo(id);
+        Route route = routeService.getRouteById(id);
         model.addAttribute("route", route);
 
         return "busList/routeInfo";
@@ -109,6 +109,7 @@ public class BusListController {
             jsonObject.addProperty("stationSeq", location.getStationSeq());
             jsonObject.addProperty("plateNo", location.getPlateNo());
             jsonObject.addProperty("plateType", location.getPlateType());
+            jsonObject.addProperty("plateTypeIconUrl", location.getPlateTypeIconUrl());
             jsonObject.addProperty("remainSeatCnt", location.getRemainSeatCnt());
             jsonObject.addProperty("createdAt", location.getFormatedCreatedAt());
             list.add(jsonObject);

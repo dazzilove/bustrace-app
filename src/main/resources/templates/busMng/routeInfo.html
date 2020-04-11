@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default">
+
+<th:block layout:fragment="script">
+</th:block>
+
+<div layout:fragment="content" >
+    <script>
+        function goRouteList() {
+            location.href = "/busMng/routeList";
+        }
+
+        function editRoute() {
+            location.href = "/busMng/viewEditRoute?id=" + $("#id").val();
+        }
+
+        function delRoute() {
+            $.ajax({
+                method: "POST",
+                url: "/busMng/delRoute",
+                data: {id : $("#id").val()}
+            }).done(function(msg) {
+                alert(msg);
+                location.href = "/busMng/routeList";
+            }).fail(function() {
+                alert("error");
+            });
+        }
+
+        function editTripPlan(tripPlanId) {
+            location.href = "/busMng/viewEditTripPlan?id=" + $("#id").val() + "&tripPlanId=" + tripPlanId;
+        }
+
+        function addTripPlan() {
+            location.href = '/busMng/viewAddTripPlan?id=' + $("#id").val();
+        }
+    </script>
+
+    <titleFragment th:include="fragments/title :: titleFragment ('노선 상세')"
+                   th:remove="tag"></titleFragment>
+
+    <input type="hidden" id="id" name="id" th:value="${routeInfo.id}" />
+    <ul class="nav nav-tabs subTab">
+        <li class="nav-item">
+            <a class="nav-link" href="#" id="defaultInfoTab" onclick="changeTab(this)">기본정보</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="#" id="tripPlanTab" onclick="changeTab(this)">버스운행계획</a>
+        </li>
+    </ul>
+    <div class="bottomPadding"></div>
+    <div id="defaultInfoTabArea" style="display: none;">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">라우트ID = <span th:text="${routeInfo.routeId}"></span></li>
+            <li class="list-group-item">노선번호 = <span th:text="${routeInfo.routeName}"></span></li>
+            <li class="list-group-item">운수업체 = <span th:text="${routeInfo.companyName}"></span></li>
+            <li class="list-group-item">운행정보
+                <div>평일 운행 대수 = <span th:text="${routeInfo.weekdayCount}"></span></div>
+                <div>주말 운행 대수 = <span th:text="${routeInfo.weekendCount}"></span></div>
+                <div>2층버스 평일 운행 대수 = <span th:text="${routeInfo.weekdayDoubleDeckerCount}"></span></div>
+                <div>2층버스 주말 운행 대수 = <span th:text="${routeInfo.weekendDoubleDeckerCount}"></span></div>
+            </li>
+            <li class="list-group-item">평일최소 배차시간 = <span th:text="${routeInfo.peekAlloc}"></span></li>
+            <li class="list-group-item">평일최대 배차시간 = <span th:text="${routeInfo.nPeekAlloc}"></span></li>
+            <li class="list-group-item">기점
+                <div>기점정류소 = <span th:text="${routeInfo.startStationName}"></span> (<span th:text="${routeInfo.startStationId}"></span>)</div>
+                <div>평일기점 첫차시간 = <span th:text="${routeInfo.upFirstTime}"></span></div>
+                <div>평일기점 막차시간 = <span th:text="${routeInfo.upLastTime}"></span></div>
+            </li>
+            <li class="list-group-item">종점
+                <div>종점정류소 = <span th:text="${routeInfo.endStationName}"></span> (<span th:text="${routeInfo.endStationId}"></span>)</div>
+                <div>평일종점 첫차시간 = <span th:text="${routeInfo.downFirstTime}"></span></div>
+                <div>평일종점 막차시간 = <span th:text="${routeInfo.downLastTime}"></span></div>
+            </li>
+            <li class="list-group-item">데이터 수집 배치
+                <div th:if="${routeInfo.dataGatherScheduler} != null">
+                    <div>
+                        배치실행여부 =
+                        <span th:if="${routeInfo.dataGatherScheduler.isEnabled()}">Y</span>
+                        <span th:unless="${routeInfo.dataGatherScheduler.isEnabled()}">N</span>
+                    </div>
+                    <div>배치실행주기 = <span th:text="${routeInfo.dataGatherScheduler.getScheduleName()}"></span></div>
+                </div>
+            </li>
+        </ul>
+        <div class="contentAlignRight bottomMargin topMargin">
+            <button type="button" class="btn btn-sm btn-danger" onclick="delRoute()">삭제</button>
+            <button type="button" class="btn btn-sm btn-primary" onclick="editRoute()">수정</button>
+            <button type="button" class="btn btn-sm btn-secondary" onclick="goRouteList()">List</button>
+        </div>
+    </div>
+
+    <div id="tripPlanTabArea" style="display: block;">
+        <table class="table table-sm" id="tripPlanList" >
+            <thead>
+                <tr>
+                    <th scope="col">순번</th>
+                    <th scope="col">타입</th>
+                    <th scope="col">차량번호</th>
+                    <th scope="col">주말운행</th>
+                    <th scope="col">예비차</th>
+                    <th scope="col">방학감차</th>
+                    <th scope="col">전일운행</th>
+                    <th scope="col">당일운행</th>
+                </tr>
+            </thead>
+            <tbody th:each="tripPlan: ${routeInfo.tripPlanList}">
+                <tr>
+                    <td scope="row" th:text="${tripPlan.turnNumber}"></td>
+                    <td>
+                        <img th:src="${tripPlan.getPlateTypeIconUrl()}" class="plate-type-icon" />
+                    </td>
+                    <td>
+                        <a href="#"
+                           th:attr="onclick=|editTripPlan('${tripPlan.tripPlanId}')|"
+                           th:text="${tripPlan.getShortPlateNo()}"></a>
+                    </td>
+                    <td><span class="badge badge-light import-config" th:attr="data-input-value=${tripPlan.weekendOperationYn}" th:text="${tripPlan.weekendOperationYn}"></span></td>
+                    <td><span class="badge badge-light import-config" th:attr="data-input-value=${tripPlan.spareYn}" th:text="${tripPlan.spareYn}"></span></td>
+                    <td><span class="badge badge-light import-config" th:attr="data-input-value=${tripPlan.schoolBreakReductionYn}" th:text="${tripPlan.schoolBreakReductionYn}"></span></td>
+                    <td><span class="badge badge-light import-tripplan-record" th:attr="data-input-value=${tripPlan.yesterdayTripRecordYn}" th:text="${tripPlan.yesterdayTripRecordYn}"></span></td>
+                    <td><span class="badge badge-light import-tripplan-record" th:attr="data-input-value=${tripPlan.todayTripRecordYn}" th:text="${tripPlan.todayTripRecordYn}"></span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="contentAlignRight bottomMargin topMargin">
+            <button type="button" class="btn btn-sm btn-primary" onclick="addTripPlan()">차량추가</button>
+            <button type="button" class="btn btn-sm btn-secondary" onclick="goRouteList()">List</button>
+        </div>
+    </div>
+
+</div>
+</html>

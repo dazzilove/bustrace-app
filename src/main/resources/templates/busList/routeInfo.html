@@ -174,6 +174,7 @@
                     var routeId = location.routeId;
                     var plateNo = location.plateNo;
                     var plateType = location.plateType;
+                    var plateTypeIconUrl = location.plateTypeIconUrl;
                     var remainSeatCnt = location.remainSeatCnt;
                     var createdAt = location.createdAt;
 
@@ -203,13 +204,30 @@
                         classInfo = classInfo + " seat-ten";
                     }
 
+                    var plateTypeTemp = "1F";
+                    if(plateType == "3") {
+                        plateTypeTemp = "1F";
+                    } else if(plateType == "4") {
+                        plateTypeTemp = "2F";
+                    }
+
+                    // var item = "";
+                    // item = item + "<li class='" + classInfo + "'>";
+                    // item = item + "<span>" + createdAt + "</span>";
+                    // item = item + "<span class='location-list-item-bar'>|</span>";
+                    // item = item + "<span>" + plateTypeTemp + "</span>";
+                    // item = item + "<span class='location-list-item-bar'>|</span>";
+                    // item = item + "<span>" + plateNo + "</span>";
+                    // item = item + "<span class='location-list-item-bar'>|</span>";
+                    // item = item + "<span>" + remainSeatCnt + "</span>";
+                    // item = item + "</li>";
+
                     var item = "";
                     item = item + "<li class='" + classInfo + "'>";
-                    item = item + "<span>" + createdAt + "</span>";
+                    item = item + "<span>" + plateTypeIconUrl + "</span>";
+                    item = item + "<span>" + plateNo + "(" + plateTypeTemp + ")" + "</span>";
                     item = item + "<span class='location-list-item-bar'>|</span>";
-                    item = item + "<span>" + plateType + "</span>";
-                    item = item + "<span class='location-list-item-bar'>|</span>";
-                    item = item + "<span>" + plateNo + "</span>";
+                    item = item + "<span>" + createdAt.substr(0, 5) + "</span>";
                     item = item + "<span class='location-list-item-bar'>|</span>";
                     item = item + "<span>" + remainSeatCnt + "</span>";
                     item = item + "</li>";
@@ -236,6 +254,9 @@
                     var stationSeq = $(this).attr("data-station-seq");
                     createLocationList(stationId, stationSeq);
                 });
+            }
+
+            function platView() {
             }
         </script>
         <form name="searchForm" id="searchForm">

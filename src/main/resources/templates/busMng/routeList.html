@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default">
+
+<th:block layout:fragment="script">
+</th:block>
+
+<div layout:fragment="content" >
+    <script>
+        $(function () {
+            setTripPlanCountBg();
+        });
+
+        function setTripPlanCountBg() {
+            $(".tripplan-div-count").each(function() {
+                var tripPlanTotalCount = $(this).parents("tr").children("td").children(".tripplan-tot-count").text();
+                var tripPlanCount = $(this).text();
+                if (tripPlanTotalCount == tripPlanCount) {
+                    return;
+                }
+                checkAndRemoveClass($(this), "badge-light");
+                $(this).addClass("badge-dark");
+            });
+        }
+
+        function addRoute() {
+            location.href = "/busMng/viewAddRoute";
+        }
+    </script>
+
+    <titleFragment th:include="fragments/title :: titleFragment ('노선 관리')"
+                   th:remove="tag"></titleFragment>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">번호</th>
+            <th scope="col">라우트ID</th>
+            <th scope="col">전체운행</th>
+            <th scope="col">전일운행</th>
+            <th scope="col">당일운행</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="route: ${routes}">
+            <th scope="row" th:text="${routeStat.index + 1}"></th>
+            <td><a th:href="@{/busMng/routeInfo(id=${route.id})}" th:text="${route.routeName}"></a></td>
+            <td><span th:text="${route.routeName}"></span></td>
+            <td><span class="badge badge-light tripplan-tot-count" th:text="${route.totalTripPlanCount}"></span></td>
+            <td><span class="badge badge-light tripplan-div-count" th:text="${route.yesterdayTripRecordCount}"></span></td>
+            <td><span class="badge badge-light tripplan-div-count" th:text="${route.todayTripRecordCount}"></span></td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="contentAlignRight bottomMargin topMargin">
+        <button type="button" class="btn btn-sm btn-primary" onclick="addRoute()">노선추가</button>
+    </div>
+</div>
+</html>

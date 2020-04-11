@@ -1,5 +1,6 @@
 package com.dazzilove.bustrace.app.service;
 
+import com.dazzilove.bustrace.app.domain.DataGatherScheduler;
 import com.dazzilove.bustrace.app.domain.Route;
 import com.dazzilove.bustrace.app.domain.Station;
 import com.dazzilove.bustrace.app.domain.TripPlan;
@@ -15,6 +16,7 @@ import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +36,11 @@ public class RouteServiceImpl implements RouteService {
 
     @Autowired
     private TripPlanService tripPlanService;
+
+    @Override
+    public Route getRouteById(String id) {
+        return getRoute(id);
+    }
 
     @Override
     public List<Route> getRoutes() {
@@ -70,11 +77,6 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
-    public Route getOnlyRouteInfo(String id) {
-        return getRoute(id);
-    }
-
-    @Override
     public List<Station> getStationsByRouteId(String routeId) {
         List<AggregationOperation> list = new ArrayList<AggregationOperation>();
         if (routeId.length() > 0)
@@ -89,15 +91,70 @@ public class RouteServiceImpl implements RouteService {
         return locations;
     }
 
+    @Override
+    public void addRoute(Route route) {
+        route.setId(UUID.randomUUID());
+        route.setCreatedAt(LocalDateTime.now());
+        routeRepository.insert(route);
+    }
+
+    @Override
+    public void editRoute(Route route) {
+        Route updateTarget = getRoute(route.getId().toString());
+        updateTarget.setCompanyId(route.getCompanyId());
+        updateTarget.setCompanyName(route.getCompanyName());
+        updateTarget.setCompanyTel(route.getCompanyTel());
+        updateTarget.setDistrictCd(route.getDistrictCd());
+        updateTarget.setDownFirstTime(route.getDownFirstTime());
+        updateTarget.setDownLastTime(route.getDownLastTime());
+        updateTarget.setEndMobileNo(route.getEndMobileNo());
+        updateTarget.setEndStationId(route.getEndStationId());
+        updateTarget.setEndStationName(route.getEndStationName());
+        updateTarget.setPeekAlloc(route.getPeekAlloc());
+        updateTarget.setRegionName(route.getRegionName());
+        updateTarget.setRouteId(route.getRouteId());
+        updateTarget.setRouteName(route.getRouteName());
+        updateTarget.setRouteTypeCd(route.getRouteTypeCd());
+        updateTarget.setRouteTypeName(route.getRouteTypeName());
+        updateTarget.setStartMobileNo(route.getStartMobileNo());
+        updateTarget.setStartStationId(route.getStartStationId());
+        updateTarget.setStartStationName(route.getStartStationName());
+        updateTarget.setUpFirstTime(route.getUpFirstTime());
+        updateTarget.setUpLastTime(route.getUpLastTime());
+        updateTarget.setNPeekAlloc(route.getNPeekAlloc());
+        updateTarget.setUpdatedAt(LocalDateTime.now());
+        updateTarget.setDataGatherScheduler(route.getDataGatherScheduler());
+        updateTarget.setWeekdayCount(route.getWeekdayCount());
+        updateTarget.setWeekendCount(route.getWeekendCount());
+        updateTarget.setWeekdayDoubleDeckerCount(route.getWeekdayDoubleDeckerCount());
+        updateTarget.setWeekendDoubleDeckerCount(route.getWeekendDoubleDeckerCount());
+        routeRepository.save(updateTarget);
+    }
+
+    @Override
+    public void deleteRoute(Route route) throws Exception {
+        Route updateTarget = getRoute(route.getId().toString());
+        if("".equals(updateTarget.getRouteId()))
+            throw new Exception("정보가 올바르지 않습니다.");
+        updateTarget.setDeleteYn("Y");
+        updateTarget.setDeletedAt(LocalDateTime.now());
+        updateTarget.setUpdatedAt(LocalDateTime.now());
+        routeRepository.save(updateTarget);
+    }
+
+    private Route getRoute(String id) {
+        Route route = routeRepository.findById(UUID.fromString(id)).orElse(new Route());
+        if (route.getDataGatherScheduler() == null) {
+            route.setDataGatherScheduler(new DataGatherScheduler());
+        }
+        route.setTripPlanList(getTripPlans(route.getRouteId()));
+        return route;
+    }
+
     private List<TripPlan> getTripPlans(String routeId) {
         return tripPlanService.findByRouteId(routeId).stream()
                 .filter((TripPlan tempTripPlan) -> ("N".equals(tempTripPlan.getDeleteYn())))
                 .sorted((TripPlan a, TripPlan b) -> ((a.getTurnNumber() > b.getTurnNumber()) ? 1 : -1))
                 .collect(Collectors.toList());
-    }
-
-    private Route getRoute(String id) {
-        Optional<Route> tripPlan = routeRepository.findById(UUID.fromString(id));
-        return tripPlan.orElse(new Route());
     }
 }

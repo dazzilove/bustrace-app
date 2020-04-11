@@ -8,6 +8,11 @@
     text-align: center;
 }
 
+.contentAlignRight {
+    width: 100%;
+    text-align: right;
+}
+
 .topPadding {
     padding-top:15px;
 }
@@ -78,4 +83,8 @@
 }
 .seat-ten {
     background-color: #9fcdff5e;
+}
+
+.plate-type-icon {
+    width: 20px;
 }

@@ -8,7 +8,13 @@ import java.util.List;
 public interface RouteService {
     List<Route> getRoutes();
 
-    Route getOnlyRouteInfo(String id);
-
     List<Station> getStationsByRouteId(String routeId);
+
+    void addRoute(Route route);
+
+    void editRoute(Route route);
+
+    void deleteRoute(Route route) throws Exception;
+
+    Route getRouteById(String id);
 }

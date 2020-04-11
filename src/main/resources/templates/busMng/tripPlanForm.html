@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default">
+
+<th:block layout:fragment="script">
+</th:block>
+
+<div layout:fragment="content" >
+    <titleFragment
+            th:include="fragments/title :: titleFragment (${(pageMode == 'ADD') ? route.routeName + '번 차랑 추가' : route.routeName + '번 차량 수정'})"
+            th:remove="tag"></titleFragment>
+
+    <script>
+        $(function () {
+            setInputCheckedByValue();
+        });
+
+        function goRouteInfo() {
+            location.href = "/busMng/routeInfo?id=" + $("#id").val();
+        }
+
+        function addTripPlan() {
+            if(!isValid("ADD")) return;
+            $.ajax({
+                method: "POST",
+                url: "/busMng/addTripPlan",
+                data: getParams("ADD")
+            }).done(function(msg) {
+                var confirmResult = confirm(msg + "\n추가로 등록하시겠습니까?");
+                if (confirmResult) {
+                    location.href = "/busMng/viewAddTripPlan?id=" + $("#id").val();
+                } else {
+                    goRouteInfo();
+                }
+            }).fail(function() {
+                alert("error");
+            });
+        }
+        function editTripPlan() {
+            if(!isValid("EDIT")) return;
+            $.ajax({
+                method: "POST",
+                url: "/busMng/editTripPlan",
+                data: getParams("EDIT")
+            }).done(function(msg) {
+                alert(msg);
+                goRouteInfo();
+            }).fail(function() {
+                alert("error");
+            });
+        }
+        function delTripPlan() {
+            $.ajax({
+                method: "POST",
+                url: "/busMng/delTripPlan",
+                data: {
+                    tripPlanId : $("#tripPlanId").val()
+                }
+            }).done(function(msg) {
+                alert(msg);
+                goRouteInfo();
+            }).fail(function() {
+                alert("error");
+            });
+        }
+
+        function isValid(pageMode) {
+            var routeId = $("#routeId").val();
+            var tripPlanId = $("#tripPlanId").val();
+            var plateNo = $("#plateNo").val();
+            var turnNumber = $("#turnNumber").val();
+            var plateType = $(':radio[name="plateTypes"]:checked').val();
+            var weekendOperationYn = $(':radio[name="weekendOperationYn"]:checked').val();
+            var spareYn = $(':radio[name="spareYn"]:checked').val();
+            var schoolBreakReductionYn = $('input:checkbox[id="schoolBreakReductionYn"]').is(":checked");
+            var tripStopYn = $('input:checkbox[id="tripStopYn"]').is(":checked");
+
+            if (pageMode != "ADD") {
+                if (routeId == "") {
+                    alert("라우트 정보가 올바르지 않습니다.");
+                    return false;
+                }
+                if (tripPlanId == "") {
+                    alert("차량 정보가 올바르지 않습니다.");
+                    return false;
+                }
+            }
+
+            if (plateNo == "" || plateNo.length < 4) {
+                alert("차량번호를 입력해주세요.");
+                return false;
+            }
+            if (turnNumber == "") {
+                alert("순번을 입력해주세요.");
+                return false;
+            }
+            if (plateType == undefined) {
+                alert("차량타입을 선택해주세요.");
+                return false;
+            }
+            if (weekendOperationYn == undefined) {
+                alert("주말운행여부를 선택해주세요.");
+                return false;
+            }
+            if (spareYn == undefined) {
+                alert("예비차여부를 선택해주세요.");
+                return false;
+            }
+            if (schoolBreakReductionYn == undefined) {
+                alert("방학감차여부를 선택해주세요.");
+                return false;
+            }
+
+            if (schoolBreakReductionYn == "Y") {
+                var schoolBreakReductionStartedAt = $("#schoolBreakReductionStartedAt").val();
+                var schoolBreakReductionEndedAt = $("#schoolBreakReductionEndedAt").val();
+                schoolBreakReductionStartedAt = $.trim(schoolBreakReductionStartedAt);
+                schoolBreakReductionEndedAt = $.trim(schoolBreakReductionEndedAt);
+
+                if (schoolBreakReductionStartedAt == "") {
+                    alert("방학감차 시작일을 입력해주세요.");
+                    return false;
+                }
+                if (schoolBreakReductionEndedAt == "") {
+                    alert("방학감차 종료일을 입력해주세요.");
+                    return false;
+                }
+            }
+
+            if (tripStopYn == "Y") {
+                var tripStopStartedAt = $("#tripStopStartedAt").val();
+                tripStopStartedAt = $.trim(tripStopStartedAt);
+
+                if (tripStopStartedAt == "") {
+                    alert("운행중단일자를 입력해주세요.");
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        function getParams(pageMode) {
+            var schoolBreakReductionYnChecked = $('input:checkbox[id="schoolBreakReductionYn"]').is(":checked");
+            var tripStopYnChecked = $('input:checkbox[id="tripStopYn"]').is(":checked");
+
+            var params = {};
+            params.routeId = $("#routeId").val();
+            params.plateNo = $("#plateNo").val();
+            params.turnNumber = $("#turnNumber").val();
+            params.plateType = $(':radio[name="plateTypes"]:checked').val();
+            params.weekendOperationYn = $(':radio[name="weekendOperationYn"]:checked').val();
+            params.spareYn = $(':radio[name="spareYn"]:checked').val();
+            params.schoolBreakReductionYn = schoolBreakReductionYnChecked ? "Y" : "N";
+            params.schoolBreakReductionStartedAt = $("#schoolBreakReductionStartedAt").val();
+            params.schoolBreakReductionEndedAt = $("#schoolBreakReductionEndedAt").val();
+            params.tripStopYn = tripStopYnChecked ? "Y" : "N";
+            params.tripStopStartedAt = $("#tripStopStartedAt").val();
+
+            if (pageMode != "ADD") {
+                params.id = $("#id").val();
+                params.tripPlanId = $("#tripPlanId").val();
+            }
+
+            return params;
+        }
+    </script>
+
+    <form id="form1" name="form1">
+        <input type="hidden" id="id" th:value="${route.id}" />
+        <input type="hidden" id="pageMode" th:value="${pageMode}" />
+        <input type="hidden" id="routeId" th:value="${route.routeId}" />
+        <input type="hidden" id="tripPlanId" th:value="${tripPlan.id}" />
+
+        <div class="col-form-label-sm" th:if="${pageMode}!='ADD'">
+            <div>관리번호</div>
+            <input type="text" class="form-control form-control-sm"
+                   id="tripPlanId"
+                   disabled="disabled"
+                   th:attr="data-input-value=${tripPlan.id}">
+        </div>
+        <div class="col-form-label-sm">
+            <div>차량번호</div>
+            <input type="text"
+                   class="form-control form-control-sm"
+                   id="plateNo"
+                   th:attr="data-input-value=${tripPlan.plateNo}" />
+        </div>
+        <div class="col-form-label-sm">
+            <div>순번</div>
+            <input type="text"
+                   class="form-control form-control-sm"
+                   id="turnNumber"
+                   th:attr="data-input-value=${tripPlan.turnNumber}" />
+        </div>
+        <div class="col-form-label-sm">
+            <div>차량타입</div>
+            <div th:each="detailCode: ${codePlateType}">
+                <div class="form-check"
+                     th:if="${detailCode.codeId} != '99'"
+                     th:with="codeId=${detailCode.codeId}, codeName=${detailCode.codeName}">
+                    <input class="form-check-input"
+                           type="radio"
+                           name="plateTypes"
+                           th:attr="id=${'plateType_' + codeId}, value=${codeId}, data-input-value=${tripPlan.plateType}">
+                    <label class="form-check-label"
+                           th:attr="for=${'plateType_' + codeId}"
+                           th:text="${codeName}">
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="col-form-label-sm">
+            <div>주말운행여부</div>
+            <div th:each="detailCode: ${codeWeekendOperationYn}">
+                <div class="form-check"
+                     th:if="${detailCode.codeId} != '99'"
+                     th:with="codeId=${detailCode.codeId}, codeName=${detailCode.codeName}">
+                    <input class="form-check-input"
+                           type="radio"
+                           name="weekendOperationYn"
+                           th:attr="id=${'weekendOperation_' + codeId}, value=${codeId}, data-input-value=${tripPlan.weekendOperationYn}">
+                    <label class="form-check-label"
+                           th:attr="for=${'weekendOperation_' + codeId}"
+                           th:text="${codeName}">
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="col-form-label-sm">
+            <div>예비차여부</div>
+            <div th:each="detailCode: ${codeSpareTripYn}">
+                <div class="form-check"
+                     th:if="${detailCode.codeId} != '99'"
+                     th:with="codeId=${detailCode.codeId}, codeName=${detailCode.codeName}">
+                    <input class="form-check-input"
+                           type="radio"
+                           name="spareYn"
+                           th:attr="id=${'spare_' + codeId}, value=${codeId}, data-input-value=${tripPlan.spareYn}">
+                    <label class="form-check-label"
+                           th:attr="for=${'spare_' + codeId}"
+                           th:text="${codeName}">
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="col-form-label-sm">
+            <div>방학감차</div>
+            <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <input type="checkbox" id="schoolBreakReductionYn"
+                               th:attr="value=${tripPlan.schoolBreakReductionYn},
+                                        data-checked-YN=${tripPlan.schoolBreakReductionYn}" />
+                    </span>
+                </div>
+                <input class="form-control form-control-sm"
+                       type="date"
+                       id="schoolBreakReductionStartedAt"
+                       name="schoolBreakReductionStartedAt"
+                       th:attr="data-input-value=${tripPlan.getShortFormatedSchoolBreakReductionStartedAt()}">
+                <input class="form-control form-control-sm"
+                       type="date"
+                       id="schoolBreakReductionEndedAt"
+                       name="schoolBreakReductionEndedAt"
+                       th:attr="data-input-value=${tripPlan.getShortFormatedSchoolBreakReductionEndedAt()}">
+            </div>
+        </div>
+        <div class="col-form-label-sm">
+            <div>운행중단</div>
+            <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <input type="checkbox" id="tripStopYn"
+                               th:attr="value=${tripPlan.tripStopYn},
+                                        data-checked-YN=${tripPlan.tripStopYn}" />
+                    </span>
+                </div>
+                <input class="form-control form-control-sm"
+                       type="date"
+                       id="tripStopStartedAt"
+                       name="tripStopStartedAt"
+                       th:attr="data-input-value=${tripPlan.getShortFormatedTripStopStartedAt()}">
+            </div>
+        </div>
+
+        <div class="contentAlignRight bottomMargin topMargin">
+            <div th:if="${pageMode}=='ADD'">
+                <button type="button" class="btn btn-sm btn-primary" onclick="addTripPlan()">추가</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="goRouteInfo()">Back</button>
+            </div>
+            <div th:if="${pageMode}!='ADD'">
+                <button type="button" class="btn btn-sm btn-danger" onclick="delTripPlan()">삭제</button>
+                <button type="button" class="btn btn-sm btn-primary" onclick="editTripPlan()">수정</button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="goRouteInfo()">Back</button>
+            </div>
+        </div>
+    </form>
+</div>
+</html>

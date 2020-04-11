@@ -1,8 +1,10 @@
 package com.dazzilove.bustrace.app.domain;
 
+import com.dazzilove.bustrace.app.utils.CodeUtil;
 import com.dazzilove.bustrace.app.utils.DateUtil;
 import lombok.Data;
 import lombok.ToString;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
@@ -36,6 +38,10 @@ public class Location {
     public String getShortPlateNo() {
         int length = plateNo.length();
         return plateNo.substring(length -4, length);
+    }
+
+    public String getPlateTypeIconUrl() {
+        return StringUtils.defaultIfEmpty(CodeUtil.getDetailCodeByDetailCodeId("PLATE_TYPE", this.plateType).getImg(), "");
     }
 
     public String getFormatedCreatedAt() {
