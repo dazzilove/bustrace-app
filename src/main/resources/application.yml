@@ -3,14 +3,15 @@ logging:
     hello: INFO
     org:
       springframework:
-        ws: DEBUG
+        ws: INFO
         data:
-          mongodb: DEBUG
+          mongodb: INFO
 
 server:
   port: 8081
 
 spring:
+  pid: bustrace-app.pid
   application:
     name: Bootstrap Spring Boot
   data:
