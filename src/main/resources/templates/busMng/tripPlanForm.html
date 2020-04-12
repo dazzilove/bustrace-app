@@ -198,8 +198,8 @@
             <div>차량타입</div>
             <div th:each="detailCode: ${codePlateType}">
                 <div class="form-check"
-                     th:if="${detailCode.codeId} != '99'"
-                     th:with="codeId=${detailCode.codeId}, codeName=${detailCode.codeName}">
+                     th:if="${detailCode.id} != '99'"
+                     th:with="codeId=${detailCode.id}, codeName=${detailCode.name}">
                     <input class="form-check-input"
                            type="radio"
                            name="plateTypes"
@@ -215,8 +215,8 @@
             <div>주말운행여부</div>
             <div th:each="detailCode: ${codeWeekendOperationYn}">
                 <div class="form-check"
-                     th:if="${detailCode.codeId} != '99'"
-                     th:with="codeId=${detailCode.codeId}, codeName=${detailCode.codeName}">
+                     th:if="${detailCode.id} != '99'"
+                     th:with="codeId=${detailCode.id}, codeName=${detailCode.name}">
                     <input class="form-check-input"
                            type="radio"
                            name="weekendOperationYn"
@@ -232,8 +232,8 @@
             <div>예비차여부</div>
             <div th:each="detailCode: ${codeSpareTripYn}">
                 <div class="form-check"
-                     th:if="${detailCode.codeId} != '99'"
-                     th:with="codeId=${detailCode.codeId}, codeName=${detailCode.codeName}">
+                     th:if="${detailCode.id} != '99'"
+                     th:with="codeId=${detailCode.id}, codeName=${detailCode.name}">
                     <input class="form-check-input"
                            type="radio"
                            name="spareYn"
