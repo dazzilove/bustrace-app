@@ -224,7 +224,8 @@
 
                     var item = "";
                     item = item + "<li class='" + classInfo + "'>";
-                    item = item + "<span>" + plateTypeIconUrl + "</span>";
+                    item = item + "<span><img src='" + plateTypeIconUrl + "' class='plate-type-icon'></span>";
+                    item = item + "<span class='location-list-item-bar'>|</span>";
                     item = item + "<span>" + plateNo + "(" + plateTypeTemp + ")" + "</span>";
                     item = item + "<span class='location-list-item-bar'>|</span>";
                     item = item + "<span>" + createdAt.substr(0, 5) + "</span>";
