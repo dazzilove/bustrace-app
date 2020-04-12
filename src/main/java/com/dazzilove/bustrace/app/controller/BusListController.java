@@ -6,10 +6,7 @@ import com.dazzilove.bustrace.app.controller.dto.StationParams;
 import com.dazzilove.bustrace.app.domain.Location;
 import com.dazzilove.bustrace.app.domain.Route;
 import com.dazzilove.bustrace.app.domain.Station;
-import com.dazzilove.bustrace.app.service.BusLocationService;
-import com.dazzilove.bustrace.app.service.LocationService;
-import com.dazzilove.bustrace.app.service.RouteService;
-import com.dazzilove.bustrace.app.service.SpecialMessageService;
+import com.dazzilove.bustrace.app.service.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.apache.commons.lang.StringUtils;
@@ -32,6 +29,9 @@ public class BusListController {
 
     @Autowired
     LocationService locationService;
+
+    @Autowired
+    RealtimeLocationService realtimeLocationService;
 
     @Autowired
     BusLocationService busLocationService;
@@ -97,7 +97,7 @@ public class BusListController {
 
         List<Location> locations;
         if (isToday(locationParams.getCreatedAt())) {
-            locations = busLocationService.getLocations(locationParams);
+            locations = realtimeLocationService.getLocations(locationParams);
         } else {
             locations = locationService.getLocations(locationParams);
         }
