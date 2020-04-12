@@ -21,6 +21,9 @@ public class DataGatherScheduler {
 
     public String getScheduleName() {
         String scheduleName = "";
+        if (schedule == null) {
+            return scheduleName;
+        }
         switch (this.schedule) {
             case "1":
                 scheduleName = "1분";

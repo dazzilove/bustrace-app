@@ -44,19 +44,19 @@ public class CodeUtil implements ApplicationContextAware, InitializingBean {
         }
 
         codes.clear();
-        codeList.forEach(code -> codes.put(code.getCodeId(), code));
+        codeList.forEach(code -> codes.put(code.getId(), code));
     }
 
     public static Code getCode(String codeId) {
         return codes.get(codeId);
     }
 
-    public static DetailCode getDetailCodeByDetailCodeId(String codeId, String detailCodeId) {
-        Code code = CodeUtil.getCode(codeId);
+    public static DetailCode getDetailCode(DetailCode detailCode) {
+        Code code = CodeUtil.getCode(detailCode.getMasterId());
         if (code == null) {
             return new DetailCode();
         }
-        return code.getDetailCode(detailCodeId);
+        return code.getDetailCode(detailCode.getId());
     }
 
 }

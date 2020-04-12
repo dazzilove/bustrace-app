@@ -5,20 +5,16 @@ import lombok.ToString;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @ToString
 public class DetailCode {
-    @Id
-    private UUID id;
-
-    private String codeId;
-    private String codeName;
+    @Id private String id;
+    private String masterId;
+    private String name;
     private int sortNumber;
     private String useYn;
     private String delYn;
-    private String masterCode;
     private String img;
     private String val1, val2, val3;
     private LocalDateTime createdAt;
@@ -27,5 +23,27 @@ public class DetailCode {
 
     public boolean isDeleted() {
         return "Y".equals(delYn);
+    }
+
+    public boolean isAddValidate() {
+        if(masterId == null || masterId.trim().length() == 0) return false;
+        if(id == null || id.trim().length() == 0) return false;
+        if(name == null || name.trim().length() == 0) return false;
+        if(useYn == null || useYn.trim().length() == 0) return false;
+        return true;
+    }
+
+    public boolean isEditValidate() {
+        if(masterId == null || masterId.trim().length() == 0) return false;
+        if(id == null || id.trim().length() == 0) return false;
+        if(name == null || name.trim().length() == 0) return false;
+        if(useYn == null || useYn.trim().length() == 0) return false;
+        return true;
+    }
+
+    public boolean isDelValidate() {
+        if(masterId == null || masterId.trim().length() == 0) return false;
+        if(id == null || id.trim().length() == 0) return false;
+        return true;
     }
 }

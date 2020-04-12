@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default">
+
+<th:block layout:fragment="script">
+</th:block>
+
+<div layout:fragment="content" >
+    <script>
+        function goCodeList() {
+            location.href = "/codeMng/codeList";
+        }
+
+        function editCode() {
+            location.href = "/codeMng/viewEditCode?id=" + $("#id").val();
+        }
+
+        function delCode() {
+            $.ajax({
+                method: "POST",
+                url: "/codeMng/delCode",
+                data: {id : $("#id").val()}
+            }).done(function(msg) {
+                alert(msg);
+                location.href = "/codeMng/codeList";
+            }).fail(function() {
+                alert("error");
+            });
+        }
+
+        function addDetailCode() {
+            location.href = "/codeMng/viewAddDetailCode?masterId=" + $("#id").val();
+        }
+    </script>
+
+    <titleFragment th:include="fragments/title :: titleFragment ('노선 상세')"
+                   th:remove="tag"></titleFragment>
+
+    <input type="hidden" id="id" name="id" th:value="${codeInfo.id}" />
+
+    <div id="defaultInfoTabArea">
+        코드정보
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">코드ID = <span th:text="${codeInfo.id}"></span></li>
+            <li class="list-group-item">노선번호 = <span th:text="${codeInfo.name}"></span></li>
+            <li class="list-group-item">사용여부 = <span th:text="${codeInfo.useYn}"></span></li>
+        </ul>
+        <div class="contentAlignRight bottomMargin topMargin">
+            <button type="button" class="btn btn-sm btn-danger" onclick="delCode()">삭제</button>
+            <button type="button" class="btn btn-sm btn-primary" onclick="editCode()">수정</button>
+            <button type="button" class="btn btn-sm btn-secondary" onclick="goCodeList()">List</button>
+        </div>
+    </div>
+
+    <div id="detailCodeTabArea">
+        상세코드 리스트
+        <table class="table table-sm" id="detailCodeList" >
+            <thead>
+            <tr>
+                <th scope="col">순번</th>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">사용여부</th>
+            </tr>
+            </thead>
+            <tbody th:each="detailCode: ${codeInfo.detailCodes}">
+            <tr>
+                <td scope="row" th:text="${detailCode.sortNumber}"></td>
+                <td><a th:href="@{/codeMng/viewEditDetailCode(masterId=${codeInfo.id}, id=${detailCode.id})}" th:text="${detailCode.id}"></a></td>
+                <td th:attr="data-input-value=${detailCode.name}" th:text="${detailCode.name}"></td>
+                <td th:attr="data-input-value=${detailCode.useYn}" th:text="${detailCode.useYn}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="contentAlignRight bottomMargin topMargin">
+            <button type="button" class="btn btn-sm btn-primary" onclick="addDetailCode()">상세코추가</button>
+            <button type="button" class="btn btn-sm btn-secondary" onclick="goCodeList()">List</button>
+        </div>
+    </div>
+
+</div>
+</html>

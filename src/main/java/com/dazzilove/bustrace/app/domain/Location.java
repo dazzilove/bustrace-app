@@ -41,7 +41,10 @@ public class Location {
     }
 
     public String getPlateTypeIconUrl() {
-        return StringUtils.defaultIfEmpty(CodeUtil.getDetailCodeByDetailCodeId("PLATE_TYPE", this.plateType).getImg(), "");
+        DetailCode detailCode = new DetailCode();
+        detailCode.setMasterId(CodeEnum.PLATE_TYPE.name());
+        detailCode.setId(this.plateType);
+        return StringUtils.defaultIfEmpty(CodeUtil.getDetailCode(detailCode).getImg(), "");
     }
 
     public String getFormatedCreatedAt() {

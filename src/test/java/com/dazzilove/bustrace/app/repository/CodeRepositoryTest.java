@@ -29,9 +29,8 @@ public class CodeRepositoryTest {
         List<DetailCode> detailCodes = new ArrayList<>();
 
         DetailCode detailCode = new DetailCode();
-        detailCode.setId(UUID.randomUUID());
-        detailCode.setCodeId("1");
-        detailCode.setCodeName("소형승합차");
+        detailCode.setId("1");
+        detailCode.setName("소형승합차");
         detailCode.setImg("/img/bus1f_0.png");
         detailCode.setSortNumber(1);
         detailCode.setUseYn("Y");
@@ -41,41 +40,36 @@ public class CodeRepositoryTest {
         detailCodes.add(detailCode);
 
         detailCode = new DetailCode();
-        detailCode.setId(UUID.randomUUID());
-        detailCode.setCodeId("2");
-        detailCode.setCodeName("중형승합차");
+        detailCode.setId("2");
+        detailCode.setName("중형승합차");
         detailCode.setImg("/img/bus1f_1.png");
         detailCode.setSortNumber(2);
         detailCodes.add(detailCode);
 
         detailCode = new DetailCode();
-        detailCode.setId(UUID.randomUUID());
-        detailCode.setCodeId("3");
-        detailCode.setCodeName("대형승합차");
+        detailCode.setId("3");
+        detailCode.setName("대형승합차");
         detailCode.setImg("/img/bus1f_2.png");
         detailCode.setSortNumber(3);
         detailCodes.add(detailCode);
 
         detailCode = new DetailCode();
-        detailCode.setId(UUID.randomUUID());
-        detailCode.setCodeId("4");
-        detailCode.setCodeName("2층버스");
+        detailCode.setId("4");
+        detailCode.setName("2층버스");
         detailCode.setImg("/img/bus2f_2.png");
         detailCode.setSortNumber(4);
         detailCodes.add(detailCode);
 
         detailCode = new DetailCode();
-        detailCode.setId(UUID.randomUUID());
-        detailCode.setCodeId("99");
-        detailCode.setCodeName("전체");
+        detailCode.setId("99");
+        detailCode.setName("전체");
         detailCode.setImg("/img/bus.png");
         detailCode.setSortNumber(99);
         detailCodes.add(detailCode);
 
         Code code = new Code();
-        code.setId(UUID.randomUUID());
-        code.setCodeId("PLATE_TYPE");
-        code.setCodeName("차량타입");
+        code.setId("PLATE_TYPE");
+        code.setName("차량타입");
         code.setUseYn("Y");
         code.setDelYn("N");
         code.setCreatedAt(LocalDateTime.now());
@@ -89,9 +83,8 @@ public class CodeRepositoryTest {
         List<DetailCode> detailCodes = new ArrayList<>();
 
         DetailCode detailCode = new DetailCode();
-        detailCode.setId(UUID.randomUUID());
-        detailCode.setCodeId("Y");
-        detailCode.setCodeName("주말운행 O");
+        detailCode.setId("Y");
+        detailCode.setName("주말운행 O");
         detailCode.setSortNumber(1);
         detailCode.setUseYn("Y");
         detailCode.setDelYn("N");
@@ -100,9 +93,8 @@ public class CodeRepositoryTest {
         detailCodes.add(detailCode);
 
         detailCode = new DetailCode();
-        detailCode.setId(UUID.randomUUID());
-        detailCode.setCodeId("N");
-        detailCode.setCodeName("주말운행 X");
+        detailCode.setId("N");
+        detailCode.setName("주말운행 X");
         detailCode.setSortNumber(2);
         detailCode.setUseYn("Y");
         detailCode.setDelYn("N");
@@ -111,9 +103,8 @@ public class CodeRepositoryTest {
         detailCodes.add(detailCode);
 
         Code code = new Code();
-        code.setId(UUID.randomUUID());
-        code.setCodeId("WEEKEND_OPERATION_YN");
-        code.setCodeName("주말운행여부");
+        code.setId("WEEKEND_OPERATION_YN");
+        code.setName("주말운행여부");
         code.setUseYn("Y");
         code.setDelYn("N");
         code.setCreatedAt(LocalDateTime.now());
@@ -127,9 +118,8 @@ public class CodeRepositoryTest {
         List<DetailCode> detailCodes = new ArrayList<>();
 
         DetailCode detailCode = new DetailCode();
-        detailCode.setId(UUID.randomUUID());
-        detailCode.setCodeId("Y");
-        detailCode.setCodeName("예비차 O");
+        detailCode.setId("Y");
+        detailCode.setName("예비차 O");
         detailCode.setSortNumber(1);
         detailCode.setUseYn("Y");
         detailCode.setDelYn("N");
@@ -138,9 +128,8 @@ public class CodeRepositoryTest {
         detailCodes.add(detailCode);
 
         detailCode = new DetailCode();
-        detailCode.setId(UUID.randomUUID());
-        detailCode.setCodeId("N");
-        detailCode.setCodeName("예비차 X");
+        detailCode.setId("N");
+        detailCode.setName("예비차 X");
         detailCode.setSortNumber(2);
         detailCode.setUseYn("Y");
         detailCode.setDelYn("N");
@@ -149,9 +138,8 @@ public class CodeRepositoryTest {
         detailCodes.add(detailCode);
 
         Code code = new Code();
-        code.setId(UUID.randomUUID());
-        code.setCodeId("SPARE_TRIP_YN");
-        code.setCodeName("예비차여부");
+        code.setId("SPARE_TRIP_YN");
+        code.setName("예비차여부");
         code.setUseYn("Y");
         code.setDelYn("N");
         code.setCreatedAt(LocalDateTime.now());
@@ -165,9 +153,8 @@ public class CodeRepositoryTest {
         List<DetailCode> detailCodes = new ArrayList<>();
 
         DetailCode detailCode = new DetailCode();
-        detailCode.setId(UUID.randomUUID());
-        detailCode.setCodeId("Y");
-        detailCode.setCodeName("방학감차 O");
+        detailCode.setId("Y");
+        detailCode.setName("방학감차 O");
         detailCode.setSortNumber(1);
         detailCode.setUseYn("Y");
         detailCode.setDelYn("N");
@@ -176,9 +163,8 @@ public class CodeRepositoryTest {
         detailCodes.add(detailCode);
 
         detailCode = new DetailCode();
-        detailCode.setId(UUID.randomUUID());
-        detailCode.setCodeId("N");
-        detailCode.setCodeName("방학감차 X");
+        detailCode.setId("N");
+        detailCode.setName("방학감차 X");
         detailCode.setSortNumber(2);
         detailCode.setUseYn("Y");
         detailCode.setDelYn("N");
@@ -187,9 +173,8 @@ public class CodeRepositoryTest {
         detailCodes.add(detailCode);
 
         Code code = new Code();
-        code.setId(UUID.randomUUID());
-        code.setCodeId("SCHOOL_BREAK_REDUCTION_YN");
-        code.setCodeName("방학감차여부");
+        code.setId("SCHOOL_BREAK_REDUCTION_YN");
+        code.setName("방학감차여부");
         code.setUseYn("Y");
         code.setDelYn("N");
         code.setCreatedAt(LocalDateTime.now());
@@ -203,9 +188,8 @@ public class CodeRepositoryTest {
         List<DetailCode> detailCodes = new ArrayList<>();
 
         DetailCode detailCode = new DetailCode();
-        detailCode.setId(UUID.randomUUID());
-        detailCode.setCodeId("Y");
-        detailCode.setCodeName("운행중단 O");
+        detailCode.setId("Y");
+        detailCode.setName("운행중단 O");
         detailCode.setSortNumber(1);
         detailCode.setUseYn("Y");
         detailCode.setDelYn("N");
@@ -214,9 +198,8 @@ public class CodeRepositoryTest {
         detailCodes.add(detailCode);
 
         detailCode = new DetailCode();
-        detailCode.setId(UUID.randomUUID());
-        detailCode.setCodeId("N");
-        detailCode.setCodeName("운행중단 X");
+        detailCode.setId("N");
+        detailCode.setName("운행중단 X");
         detailCode.setSortNumber(2);
         detailCode.setUseYn("Y");
         detailCode.setDelYn("N");
@@ -225,9 +208,8 @@ public class CodeRepositoryTest {
         detailCodes.add(detailCode);
 
         Code code = new Code();
-        code.setId(UUID.randomUUID());
-        code.setCodeId("TRIP_STOP_YN");
-        code.setCodeName("운행중단여부");
+        code.setId("TRIP_STOP_YN");
+        code.setName("운행중단여부");
         code.setUseYn("Y");
         code.setDelYn("N");
         code.setCreatedAt(LocalDateTime.now());
