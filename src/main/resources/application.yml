@@ -7,6 +7,9 @@ logging:
         data:
           mongodb: DEBUG
 
+server:
+  port: 8081
+
 spring:
   application:
     name: Bootstrap Spring Boot
