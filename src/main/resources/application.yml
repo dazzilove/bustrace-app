@@ -1,7 +1,6 @@
 logging:
   file:
-    name: bustrace-app.log
-    path: ./logs
+    name: ./logs/bustrace-app.log
   level:
     hello: INFO
     org:
