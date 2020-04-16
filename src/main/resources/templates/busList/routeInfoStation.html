@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default">
+
+<div layout:fragment="content" >
+    <titleFragment th:include="fragments/title :: titleFragment (${route.routeName} + '번 상세정보')"
+                   th:remove="tag"></titleFragment>
+
+    <busListTabFrag th:include="fragments/busListTab :: busListTabFrag (tabIndex='2', routeId=${route.id.toString()})"
+                    th:remove="tag"></busListTabFrag>
+
+    <div>
+        <script>
+            var createdAtOldVal = "";
+            $(document).ready(function() {
+                createdAtOldVal = $("#createdAt").val();
+                $("#createdAt").on("propertychange change keyup paste input", function() {
+                    resetSearchDivRadio();
+                });
+                // resetStations('location-list');
+            });
+
+            var totalStationCnt = 0;
+            var returnStationCnt = 0;
+            var returnStationFailCnt = 0;
+            function updateProgress() {
+                returnStationCnt = returnStationCnt + 1;
+                var percente = parseInt((returnStationCnt / totalStationCnt) * 100);
+                $(".progress-bar").css("width", percente + "%");
+                if (returnStationCnt == totalStationCnt) {
+                    setTimeout(function(){
+                        $(".progress-area").css("display", "none");
+                        if (returnStationFailCnt > 0) {
+                            alert("조회 중 에러가 발생 했습니다.");
+                            return;
+                        }
+                    }, 1000);
+                }
+            }
+
+            function resetSearchDivRadio() {
+                var currentVal = $(".createdAt").val();
+                if(currentVal == createdAtOldVal) {
+                    return;
+                }
+            }
+
+            function resetStations(targetClassName) {
+                $.ajax({
+                    method: "GET",
+                    url: "/route/stations",
+                    data: {
+                        routeId : $("#routeId").val()
+                    }
+                })
+                .done(function(data) {
+                    createStationList(data);
+                    showLocationListAll();
+                })
+                .fail(function() {
+                    alert("error");
+                });
+            }
+
+            function createLocationList(stationId, stationSeq) {
+                var routeId = $("#routeId").val();
+                var createdAt = $("#createdAt").val();
+
+                $.ajax({
+                    method: "GET",
+                    url: "/route/locations",
+                    data: {
+                        routeId: routeId,
+                        stationId: stationId,
+                        stationSeq: stationSeq,
+                        createdAt: createdAt
+                    }
+                })
+                .done(function(data) {
+                    showLocationList($("#station-" + stationId + "-location-list"), data);
+                })
+                .fail(function() {
+                    returnStationFailCnt++;
+                    updateProgress();
+                });
+            }
+
+            function createStationList(data) {
+                var ul = $("#stationList");
+                $("#stationList").text("");
+                ul.addClass("station-list");
+
+                var stations = JSON.parse(data);
+                var stationsLen = stations.length;
+                totalStationCnt = stationsLen;
+                for (var i=0; i<stationsLen; i++) {
+                    var station = stations[i];
+                    var stationId = station.stationId;
+                    var stationSeq = station.stationSeq;
+                    var stationName = station.stationName;
+
+                    var li = document.createElement("li");
+                    li.setAttribute("id", "station-" + stationId);
+                    li.setAttribute("class", "station-list-item align-middle");
+                    li.setAttribute("data-station-id", stationId);
+                    li.setAttribute("data-station-seq", stationSeq);
+                    ul.append(li);
+
+                    var divStation = document.createElement("div");
+                    divStation.setAttribute("class", "clearfix");
+                    li.append(divStation);
+
+                    var divStationName = document.createElement("div");
+                    divStationName.setAttribute("class", "float-left");
+                    divStationName.innerText = stationName;
+                    divStation.append(divStationName);
+
+                    var buttonGroup = document.createElement("div");
+                    buttonGroup.setAttribute("class", "btn-group btn-group-toggle btn-group-sm float-right");
+                    buttonGroup.setAttribute("role", "group");
+                    divStation.append(buttonGroup);
+
+                    var divLocations = document.createElement("div");
+                    divLocations.setAttribute("id", "station-" + stationId + "-location-list");
+                    divLocations.setAttribute("class", "location-list close");
+                    divLocations.setAttribute("data-station-id", stationId);
+                    divLocations.setAttribute("data-station-seq", stationSeq);
+                    li.append(divLocations);
+                }
+            }
+
+            function showLocationList(targetObj, data) {
+                var html = "<ul>";
+                var locations = JSON.parse(data);
+                var locationsLength = locations.length;
+                for (var i=0; i<locationsLength; i++) {
+                    var location = locations[i];
+                    var routeId = location.routeId;
+                    var plateNo = location.plateNo;
+                    var plateType = location.plateType;
+                    var plateTypeIconUrl = location.plateTypeIconUrl;
+                    var remainSeatCnt = location.remainSeatCnt;
+                    var createdAt = location.createdAt;
+
+                    var plateNoLen = plateNo.length;
+                    if (plateNoLen >= 4) {
+                        plateNo = plateNo.substr(plateNoLen-4, plateNoLen);
+                    }
+
+                    var createdAtLen = createdAt.length;
+                    if (createdAtLen >= 8) {
+                        createdAt = createdAt.substr(createdAtLen-8, createdAtLen);
+                    }
+
+                    var classInfo = "location-item";
+
+                    if (i == 0) {
+                        classInfo = classInfo + " border-top";
+                    }
+                    if (i < locationsLength-1) {
+                        classInfo = classInfo + " border-bottom";
+                    }
+
+                    var remainSeatCntInt = parseInt(remainSeatCnt);
+                    if (remainSeatCntInt == 0) {
+                        classInfo = classInfo + " seat-zero";
+                    } else if (remainSeatCntInt <= 10) {
+                        classInfo = classInfo + " seat-ten";
+                    }
+
+                    var plateTypeTemp = "1F";
+                    if(plateType == "3") {
+                        plateTypeTemp = "1F";
+                    } else if(plateType == "4") {
+                        plateTypeTemp = "2F";
+                    }
+
+                    // var item = "";
+                    // item = item + "<li class='" + classInfo + "'>";
+                    // item = item + "<span>" + createdAt + "</span>";
+                    // item = item + "<span class='location-list-item-bar'>|</span>";
+                    // item = item + "<span>" + plateTypeTemp + "</span>";
+                    // item = item + "<span class='location-list-item-bar'>|</span>";
+                    // item = item + "<span>" + plateNo + "</span>";
+                    // item = item + "<span class='location-list-item-bar'>|</span>";
+                    // item = item + "<span>" + remainSeatCnt + "</span>";
+                    // item = item + "</li>";
+
+                    var item = "";
+                    item = item + "<li class='" + classInfo + "'>";
+                    item = item + "<span><img src='" + plateTypeIconUrl + "' class='plate-type-icon'></span>";
+                    item = item + "<span class='location-list-item-bar'>|</span>";
+                    item = item + "<span>" + plateNo + "(" + plateTypeTemp + ")" + "</span>";
+                    item = item + "<span class='location-list-item-bar'>|</span>";
+                    item = item + "<span>" + createdAt.substr(0, 5) + "</span>";
+                    item = item + "<span class='location-list-item-bar'>|</span>";
+                    item = item + "<span>" + remainSeatCnt + "</span>";
+                    item = item + "</li>";
+
+                    html = html + item.toString();
+                }
+                html = html + "</ul>";
+                $(targetObj).html("");
+                $(targetObj).html(html);
+
+                checkAndRemoveClass($(targetObj), "close");
+                $(targetObj).addClass("open");
+
+                updateProgress();
+            }
+
+            function showLocationListAll() {
+                returnStationCnt = 0;
+                $(".progress-bar").css("width", "0");
+                $(".progress-area").css("display", "block");
+
+                $(".location-list").each(function() {
+                    var stationId = $(this).attr("data-station-id");
+                    var stationSeq = $(this).attr("data-station-seq");
+                    createLocationList(stationId, stationSeq);
+                });
+            }
+
+            function platView() {
+            }
+        </script>
+        <form name="searchForm" id="searchForm">
+            <input type="hidden" id="routeId" name="routeId" th:value="${route.routeId}" />
+            <div class="form-row topPadding">
+                <div class="form-group">
+                    <input class="form-control form-control-sm" type="date" id="createdAt" name="createdAt" th:value="${createdAt}" >
+                </div>
+                <div class="form-group" style="width: 4px">
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary btn-sm " onclick="resetStations('location-list')">Search</button>
+                </div>
+            </div>
+        </form>
+        <div class="progress-area bottomPadding" style="display: none;">
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0"></div>
+            </div>
+        </div>
+        <div>
+            <ul id="stationList"></ul>
+        </div>
+    </div>
+</div>
+</html>

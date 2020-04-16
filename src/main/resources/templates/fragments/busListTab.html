@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<busListTabFrag th:fragment="busListTabFrag(tabIndex,routeId)">
+    <script>
+        $(function () {
+            $("#tab_" + getTabIndex()).addClass("active");
+        });
+
+        function goDefaultPage() {
+            location.href = "/route/info/default?id=" + getTabRouteId();
+        }
+
+        function goStationPage() {
+            location.href = "/route/info/station?id=" + getTabRouteId();
+        }
+
+        function goSpecialMessagePage() {
+            location.href = "/route/info/specialMessage?id=" + getTabRouteId();
+        }
+
+        function goRushHourPage() {
+            location.href = "/route/info/rushHour?id=" + getTabRouteId();
+        }
+
+        function getTabRouteId() {
+            return $("#tabRouteId").val();
+        }
+
+        function getTabIndex() {
+            return $("#tabIndex").val();
+        }
+    </script>
+    <input type="hidden" id="tabIndex" name="tabIndex" th:value="${tabIndex}" />
+    <input type="hidden" id="tabRouteId" name="tabRouteId" th:value="${routeId}" />
+    <ul class="nav nav-tabs subTab">
+        <li class="nav-item">
+            <a class="nav-link" href="#" id="tab_1" onclick="goDefaultPage()">기본정보</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" id="tab_2" onclick="goStationPage()">정거장정보</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" id="tab_3" onclick="goSpecialMessagePage()">특이사항</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" id="tab_4" onclick="goRushHourPage()">RushHour</a>
+        </li>
+    </ul>
+</busListTabFrag>
+</html>

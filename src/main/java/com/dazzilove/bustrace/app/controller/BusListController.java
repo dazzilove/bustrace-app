@@ -24,6 +24,8 @@ import java.util.List;
 @Controller
 public class BusListController {
 
+    public static final String DATE_PATTERN = "yyyy-MM-dd";
+
     @Autowired
     RouteService routeService;
 
@@ -57,7 +59,7 @@ public class BusListController {
 
         if ("".equals(createdAt)) {
             LocalDateTime localDateTime = LocalDateTime.now();
-            createdAt = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(localDateTime);
+            createdAt = DateTimeFormatter.ofPattern(DATE_PATTERN).format(localDateTime);
         }
         model.addAttribute("createdAt", createdAt);
 
@@ -65,6 +67,90 @@ public class BusListController {
         model.addAttribute("route", route);
 
         return "busList/routeInfo";
+    }
+
+    @RequestMapping("/route/info/default")
+    public String getRouteInfoDefault(Model model, ServletRequest request) throws Exception {
+        model.addAttribute("currentMenu", "1");
+
+        RouteParams routeParams = convertRouteParams(request);
+
+        String id = routeParams.getId();
+        String createdAt = routeParams.getCreatedAt();
+
+        if ("".equals(createdAt)) {
+            LocalDateTime localDateTime = LocalDateTime.now();
+            createdAt = DateTimeFormatter.ofPattern(DATE_PATTERN).format(localDateTime);
+        }
+        model.addAttribute("createdAt", createdAt);
+
+        Route route = routeService.getRouteById(id);
+        model.addAttribute("route", route);
+
+        return "busList/routeInfoDefault";
+    }
+
+    @RequestMapping("/route/info/station")
+    public String getRouteInfoStation(Model model, ServletRequest request) throws Exception {
+        model.addAttribute("currentMenu", "1");
+
+        RouteParams routeParams = convertRouteParams(request);
+
+        String id = routeParams.getId();
+        String createdAt = routeParams.getCreatedAt();
+
+        if ("".equals(createdAt)) {
+            LocalDateTime localDateTime = LocalDateTime.now();
+            createdAt = DateTimeFormatter.ofPattern(DATE_PATTERN).format(localDateTime);
+        }
+        model.addAttribute("createdAt", createdAt);
+
+        Route route = routeService.getRouteById(id);
+        model.addAttribute("route", route);
+
+        return "busList/routeInfoStation";
+    }
+
+    @RequestMapping("/route/info/specialMessage")
+    public String getRouteInfoSpecialMessage(Model model, ServletRequest request) throws Exception {
+        model.addAttribute("currentMenu", "1");
+
+        RouteParams routeParams = convertRouteParams(request);
+
+        String id = routeParams.getId();
+        String createdAt = routeParams.getCreatedAt();
+
+        if ("".equals(createdAt)) {
+            LocalDateTime localDateTime = LocalDateTime.now();
+            createdAt = DateTimeFormatter.ofPattern(DATE_PATTERN).format(localDateTime);
+        }
+        model.addAttribute("createdAt", createdAt);
+
+        Route route = routeService.getRouteById(id);
+        model.addAttribute("route", route);
+
+        return "busList/routeInfoSpecialMessage";
+    }
+
+    @RequestMapping("/route/info/rushHour")
+    public String getRouteInfoRushHour(Model model, ServletRequest request) throws Exception {
+        model.addAttribute("currentMenu", "1");
+
+        RouteParams routeParams = convertRouteParams(request);
+
+        String id = routeParams.getId();
+        String createdAt = routeParams.getCreatedAt();
+
+        if ("".equals(createdAt)) {
+            LocalDateTime localDateTime = LocalDateTime.now();
+            createdAt = DateTimeFormatter.ofPattern(DATE_PATTERN).format(localDateTime);
+        }
+        model.addAttribute("createdAt", createdAt);
+
+        Route route = routeService.getRouteById(id);
+        model.addAttribute("route", route);
+
+        return "busList/routeInfoRushHour";
     }
 
     @RequestMapping("/route/stations")
