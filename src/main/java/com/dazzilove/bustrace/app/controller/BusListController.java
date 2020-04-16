@@ -271,8 +271,4 @@ public class BusListController {
 
         return locationParams;
     }
-
-    private Object getSpecialMessageList(String routeId) {
-        return specialMessageService.getSpecialMessageList(routeId);
-    }
 }
