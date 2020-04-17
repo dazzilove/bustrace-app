@@ -38,9 +38,6 @@ public class BusListController {
     @Autowired
     BusLocationService busLocationService;
 
-    @Autowired
-    private SpecialMessageService specialMessageService;
-
     @RequestMapping("/busList")
     public String getBusList(Model model) throws Exception {
         model.addAttribute("currentMenu", "1");
@@ -130,27 +127,6 @@ public class BusListController {
         model.addAttribute("route", route);
 
         return "busList/routeInfoSpecialMessage";
-    }
-
-    @RequestMapping("/route/info/rushHour")
-    public String getRouteInfoRushHour(Model model, ServletRequest request) throws Exception {
-        model.addAttribute("currentMenu", "1");
-
-        RouteParams routeParams = convertRouteParams(request);
-
-        String id = routeParams.getId();
-        String createdAt = routeParams.getCreatedAt();
-
-        if ("".equals(createdAt)) {
-            LocalDateTime localDateTime = LocalDateTime.now();
-            createdAt = DateTimeFormatter.ofPattern(DATE_PATTERN).format(localDateTime);
-        }
-        model.addAttribute("createdAt", createdAt);
-
-        Route route = routeService.getRouteById(id);
-        model.addAttribute("route", route);
-
-        return "busList/routeInfoRushHour";
     }
 
     @RequestMapping("/route/stations")
